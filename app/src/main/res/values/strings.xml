@@ -9,10 +9,10 @@
     <string name="Hint_Email">Enter registered email</string>
     <string name="Password">Enter Password</string>
     <string name="Password_Desc">Password</string>
-    <string name="Hint_Password">Enter Registered password</string>
+    <string name="Hint_Password">Enter Password</string>
     <string name="Register_login">Register</string>
     <string name="Forget_Password">Forget Password</string>
-
+    <string name="Home">Home</string>
     <!--Registration-->
     <string name="Register_btn">Register</string>
     <string name="Email_Register">Email</string>
@@ -55,6 +55,7 @@
     <string name="get_help">Get Help</string>
     <string name="log_out">Logout</string>
     <string name="title_activity_maps">Map</string>
+    <string name="profile">Profile</string>
 
     <string name="back">Return to Login</string>
 
