@@ -1,12 +1,9 @@
 package com.zaylabs.truckitzaylabsv1;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -23,7 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.zaylabs.truckitzaylabsv1.fragment.CargoCalculator;
+import com.zaylabs.truckitzaylabsv1.fragment.HistoryFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.ProfileFragment;
+import com.zaylabs.truckitzaylabsv1.fragment.SettingsFragment;
+import com.zaylabs.truckitzaylabsv1.fragment.WalletFragment;
 
 
 public class MainActivity extends AppCompatActivity
@@ -120,16 +121,27 @@ public class MainActivity extends AppCompatActivity
             ft.replace(R.id.cm, new ProfileFragment());
             ft.commit();
         } else if (id == R.id.History) {
-
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.cm, new HistoryFragment());
+            ft.commit();
         } else if (id == R.id.wallet) {
-
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.cm, new WalletFragment());
+            ft.commit();
         } else if (id == R.id.cargo_calculator) {
-
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.cm, new CargoCalculator());
+            ft.commit();
         } else if (id == R.id.action_settings) {
-
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.cm, new SettingsFragment());
+            ft.commit();
         } else if (id == R.id.logout) {
             mAuth.signOut();
         } else if (id == R.id.get_help) {
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.cm, new HistoryFragment());
+            ft.commit();
 
         }
 
