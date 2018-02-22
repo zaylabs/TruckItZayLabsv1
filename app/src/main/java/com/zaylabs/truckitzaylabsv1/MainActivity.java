@@ -14,17 +14,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zaylabs.truckitzaylabsv1.fragment.CargoCalculator;
 import com.zaylabs.truckitzaylabsv1.fragment.HistoryFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.ProfileFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.SettingsFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.WalletFragment;
+
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity
@@ -34,6 +44,17 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private DatabaseReference mfirebaseDB;
 
+    private TextView mNameField, mPhoneField;
+
+    private ImageView mProfileImage;
+
+    private String mProfileImageUrl;
+
+    private String mName;
+    private String mPhone;
+    private String userID;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +62,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mAuth = FirebaseAuth.getInstance();
-        mfirebaseDB = FirebaseDatabase.getInstance().getReference();
+
+
+        mNameField = (TextView) findViewById(R.id.nameh);
+        mPhoneField = (TextView) findViewById(R.id.phoneh);
+
+        mProfileImage = (ImageView)findViewById(R.id.profileImageh);
+
+
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
 
@@ -57,6 +85,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+
+        userID = mAuth.getCurrentUser().getUid();
+        mfirebaseDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(userID);
+        getUserInfo();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +108,36 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
+
+    private void getUserInfo(){
+        mfirebaseDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if(map.get("name")!=null){
+                        mName = map.get("name").toString();
+                        mNameField.setText(mName);
+                    }
+                    if(map.get("phone")!=null){
+                        mPhone = map.get("phone").toString();
+                        mPhoneField.setText(mPhone);
+                    }
+                    if(map.get("profileImageUrl")!=null){
+                        mProfileImageUrl = map.get("profileImageUrl").toString();
+                        Glide.with(getApplication()).load(mProfileImageUrl).into(mProfileImage);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -160,5 +221,6 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
         mAuth.removeAuthStateListener(firebaseAuthListener);
     }
+
 
 }

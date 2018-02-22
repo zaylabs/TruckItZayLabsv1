@@ -13,11 +13,11 @@
         android:orientation="vertical"
         >
 
+
         <EditText
             android:id="@+id/etSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/Email_Desc"
             android:inputType="textEmailAddress"
             android:hint="@string/Email"
             tools:ignore="LabelFor"
@@ -33,6 +33,28 @@
             android:hint="@string/Hint_Password"
             android:inputType="textPassword"
             android:layout_marginBottom="40sp"
+            android:gravity="center"
+            />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40sp"
+            android:background="@null"
+            android:gravity="center"
+            android:hint="@string/customer_name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="@string/customer_number"
+            android:layout_marginBottom="40sp"
+            android:inputType="phone"
+            android:gravity="center"
             />
 
 
@@ -40,7 +62,6 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/Register_btn"
             android:text="@string/Register_btn"
             android:gravity="center"
             android:background="@color/primaryColor"
@@ -52,11 +73,3 @@
 </android.support.constraint.ConstraintLayout>
 
 
-    <!--<EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/Hint_Password"
-                android:inputType="phone"
-                android:text="@string/Phone_Number" />
-    -->

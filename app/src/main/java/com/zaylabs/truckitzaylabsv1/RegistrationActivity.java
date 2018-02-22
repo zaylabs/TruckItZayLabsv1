@@ -1,12 +1,15 @@
 package com.zaylabs.truckitzaylabsv1;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -14,8 +17,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.bumptech.glide.Glide;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -23,12 +32,13 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private DatabaseReference mfirebaseDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        final EditText mEmail,mPassword/*, mphone*/;
+        final EditText mEmail,mPassword, mNameField, mPhoneField;/*, mphone*/;
         final Button mRegister;
 
         mAuth = FirebaseAuth.getInstance();
@@ -49,7 +59,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mEmail = (EditText) findViewById(R.id.etSignIn);
         mPassword = (EditText) findViewById(R.id.etPassword);
-        //mphone = (EditText) findViewById(R.id.etPhone);
+        mNameField = (EditText) findViewById(R.id.name);
+        mPhoneField = (EditText) findViewById(R.id.phone);
+
 
         mRegister= (Button) findViewById(R.id.btnRegister);
 
@@ -67,7 +79,12 @@ public class RegistrationActivity extends AppCompatActivity {
                         }else {
                             String user_id = mAuth.getCurrentUser().getUid();
                             DatabaseReference current_user_db = mfirebaseDB.child("Users").child("Customer").child(user_id);
-                            current_user_db.setValue(true);
+                            String name = mNameField.getText().toString();
+                            String phone = mPhoneField.getText().toString();
+                            Map newPost = new HashMap();
+                                newPost.put("name", name);
+                                newPost.put("phone",phone);
+                            current_user_db.setValue(newPost);
                         }
                     }
                 });
@@ -76,6 +93,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     @Override
     protected void onStart() {
@@ -87,4 +107,5 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onStop();
         mAuth.removeAuthStateListener(firebaseAuthListener);
     }
+
 }
