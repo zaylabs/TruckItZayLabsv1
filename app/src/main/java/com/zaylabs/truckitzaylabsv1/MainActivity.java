@@ -1,10 +1,12 @@
 package com.zaylabs.truckitzaylabsv1;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentTransaction;
+import android.support.transition.FragmentTransitionSupport;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zaylabs.truckitzaylabsv1.fragment.CargoCalculator;
+import com.zaylabs.truckitzaylabsv1.fragment.HelpFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.HistoryFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.ProfileFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.SettingsFragment;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity
                 if (user != null) {
                     Toast.makeText(MainActivity.this, "User is Signed In", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SignInActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity
 
         userID = mAuth.getCurrentUser().getUid();
         mfirebaseDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(userID);
-        getUserInfo();
+     //   getUserInfo();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void getUserInfo(){
+    /*private void getUserInfo(){
         mfirebaseDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
+*/
 
     @Override
     public void onBackPressed() {
@@ -178,30 +180,30 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.Profile) {
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft= getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new ProfileFragment());
             ft.commit();
         } else if (id == R.id.History) {
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft= getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new HistoryFragment());
             ft.commit();
         } else if (id == R.id.wallet) {
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft= getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new WalletFragment());
             ft.commit();
         } else if (id == R.id.cargo_calculator) {
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft= getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new CargoCalculator());
             ft.commit();
         } else if (id == R.id.action_settings) {
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft= getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new SettingsFragment());
             ft.commit();
         } else if (id == R.id.logout) {
             mAuth.signOut();
         } else if (id == R.id.get_help) {
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.cm, new HistoryFragment());
+            FragmentTransaction ft= getFragmentManager().beginTransaction();
+            ft.replace(R.id.cm, new HelpFragment());
             ft.commit();
 
         }

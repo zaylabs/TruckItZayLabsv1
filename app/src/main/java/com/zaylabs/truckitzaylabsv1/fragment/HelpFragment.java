@@ -12,7 +12,7 @@ import com.zaylabs.truckitzaylabsv1.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HelpFragment extends android.support.v4.app.Fragment {
+public class HelpFragment extends Fragment {
 
 
     public HelpFragment() {

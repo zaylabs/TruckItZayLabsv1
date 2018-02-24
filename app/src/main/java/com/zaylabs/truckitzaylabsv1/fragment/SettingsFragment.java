@@ -13,7 +13,7 @@ import com.zaylabs.truckitzaylabsv1.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends android.support.v4.app.Fragment {
+public class SettingsFragment extends Fragment {
 
 
     public SettingsFragment() {

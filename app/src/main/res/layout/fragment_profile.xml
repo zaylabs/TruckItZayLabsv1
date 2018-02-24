@@ -1,51 +1,78 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.zaylabs.truckitzaylabsv1.fragment.ProfileFragment">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/layout_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical"
         >
+
         <ImageView
-            android:layout_width="100sp"
-            android:layout_height="100sp"
-            android:id="@+id/profileImage"
-            android:src="@drawable/ic_account_circle_black_24dp"
-            android:layout_marginBottom="20sp"
-            android:contentDescription="@string/Image_View"
+            android:id="@+id/userDP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:src="@drawable/ic_image_black_24dp"
             />
 
         <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
+            android:id="@+id/field_name"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:background="@null"
+            android:ellipsize="end"
+            android:gravity="start"
             android:hint="@string/customer_name"
-            android:layout_marginBottom="20sp"/>
+            android:inputType="text"
+            android:maxLines="1" />
+
         <EditText
-            android:id="@+id/phone"
-            android:layout_width="match_parent"
+            android:id="@+id/field_phone"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:hint="@string/customer_number"
-            android:layout_marginBottom="20sp"
-            android:inputType="number"/>
+            android:ellipsize="end"
+            android:gravity="start"
+            android:hint="@string/Phone_Number"
+            android:inputType="phone"
+            android:maxLines="1" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_details"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/imagelink"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:layout_marginBottom="5dp"
+            android:text="@string/imagelink" />
+
         <Button
-            android:layout_width="match_parent"
+            android:id="@+id/button_update"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:id="@+id/confirm"
-            android:text="@string/btn_confirm"
-        />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/back"
-            android:text="@string/backto"/>
+            android:text="@string/btnUpdate" />
+
 
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>

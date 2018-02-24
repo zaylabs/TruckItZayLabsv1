@@ -12,7 +12,7 @@ import com.zaylabs.truckitzaylabsv1.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HistoryFragment extends android.support.v4.app.Fragment {
+public class HistoryFragment extends Fragment {
 
 
     public HistoryFragment() {

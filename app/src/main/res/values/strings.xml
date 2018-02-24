@@ -11,8 +11,12 @@
     <string name="Password_Desc">Password</string>
     <string name="Hint_Password">Enter Password</string>
     <string name="Register_login">Register</string>
-    <string name="Forget_Password">Forget Password</string>
+    <string name="Forget_Password">Forget Password ?</string>
     <string name="Home">Home</string>
+    <string name="take_photo_prompt">Upload Picture</string>
+    <string name="camera_button_text">Upload</string>
+    <string name="imagelink">ImageLink</string>
+    <string name="chooseimage">Choose Image:</string>
     <!--Registration-->
     <string name="Register_btn">Register</string>
     <string name="Email_Register">Email</string>
