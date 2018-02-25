@@ -1,16 +1,14 @@
 package com.zaylabs.truckitzaylabsv1;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,25 +17,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zaylabs.truckitzaylabsv1.models.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "SignInActivity";
 
-    private static final int RC_TAKE_PICTURE = 101;
-
-    private static final String KEY_FILE_URI = "key_file_uri";
-    private static final String KEY_DOWNLOAD_URL = "key_download_url";
-
-    private Uri mDownloadUrl = null;
-    private Uri mFileUri = null;
-
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-
+    private DatabaseReference mDBRef;
     private EditText mEmailField;
     private EditText mPasswordField;
     private Button mSignInButton;
@@ -45,7 +38,10 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     private EditText mPhone;
     private EditText mName;
     private TextView mForget;
-    private String userId;
+    private String userID;
+    private ImageView mImageurl;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +60,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         mName = findViewById(R.id.field_name);
         mPhone = findViewById(R.id.field_phone);
         mForget = findViewById(R.id.textviewForgetPassword);
+        mImageurl=findViewById(R.id.displaypic);
         // Click listeners
         mSignInButton.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
@@ -144,14 +141,11 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-        String fullname = mName.getText().toString();
-        String phone = mPhone.getText().toString();
-
-        // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail(), fullname, phone);
-
-        // Go to MainActivity
+        //Set Display name
+        userdisplayname();
+        //setphonenumber
+        saveMap();
+    // Go to MainActivity
         startActivity(new Intent(SignInActivity.this, MainActivity.class));
         finish();
     }
@@ -212,13 +206,36 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         }
         return result;
     }
-    // [START basic_write]
-    private void writeNewUser(String userId, String name,String email,String fullname,String phone) {
-        User user = new User(name, email,fullname,phone);
-        userId = mAuth.getCurrentUser().getUid();
-        mDatabase.child("users").child("customer").child(userId).setValue(user);
+
+    private void userdisplayname() {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(mName.getText().toString())
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                        }
+                    }
+                });
     }
-    // [END basic_write]
+
+    public void saveMap(){
+        userID = mAuth.getCurrentUser().getUid();
+        mDBRef = mDatabase.child("users").child("customer").child(userID);
+        Map<String, Object> userUpdates = new HashMap<>();
+        final String phone = mPhone.getText().toString();
+        userUpdates.put("phone", phone);
+        mDBRef.updateChildren(userUpdates);
+    }
+
+
 
     @Override
     public void onClick(View v) {
