@@ -34,12 +34,10 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     private EditText mEmailField;
     private EditText mPasswordField;
     private Button mSignInButton;
-    private Button mSignUpButton;
-    private EditText mPhone;
-    private EditText mName;
+    private TextView mSignUp;
     private TextView mForget;
     private String userID;
-    private ImageView mImageurl;
+
 
 
 
@@ -56,14 +54,11 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         mEmailField = findViewById(R.id.field_email);
         mPasswordField = findViewById(R.id.field_password);
         mSignInButton = findViewById(R.id.button_sign_in);
-        mSignUpButton = findViewById(R.id.button_sign_up);
-        mName = findViewById(R.id.field_name);
-        mPhone = findViewById(R.id.field_phone);
+        mSignUp = findViewById(R.id.fiel_RegisterTextView);
         mForget = findViewById(R.id.textviewForgetPassword);
-        mImageurl=findViewById(R.id.displaypic);
         // Click listeners
         mSignInButton.setOnClickListener(this);
-        mSignUpButton.setOnClickListener(this);
+        mSignUp.setOnClickListener(this);
         mForget.setOnClickListener(this);
 
     }
@@ -114,50 +109,14 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         finish();
 
     }
+
     private void signUp() {
-        Log.d(TAG, "signUp");
-        if (!validateSignUpForm()) {
-            return;
-        }
 
-        showProgressDialog();
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
-                        hideProgressDialog();
-                        if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
-                        } else {
-                            Toast.makeText(SignInActivity.this, "Sign Up Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void onAuthSuccess(FirebaseUser user) {
-        //Set Display name
-        userdisplayname();
-        //setphonenumber
-        saveMap();
-    // Go to MainActivity
-        startActivity(new Intent(SignInActivity.this, MainActivity.class));
+        Intent intent = new Intent(SignInActivity.this, RegistrationActivity.class);
+        startActivity(intent);
         finish();
-    }
 
-    private String usernameFromEmail(String email) {
-        if (email.contains("@")) {
-            return email.split("@")[0];
-        } else {
-            return email;
-        }
     }
-
     private boolean validateSignInForm() {
         boolean result = true;
         if (TextUtils.isEmpty(mEmailField.getText().toString())) {
@@ -176,65 +135,6 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 
         return result;
     }
-    private boolean validateSignUpForm() {
-        boolean result = true;
-        if (TextUtils.isEmpty(mEmailField.getText().toString())) {
-            mEmailField.setError("Required");
-            result = false;
-        } else {
-            mEmailField.setError(null);
-        }
-
-        if (TextUtils.isEmpty(mPasswordField.getText().toString())) {
-            mPasswordField.setError("Required");
-            result = false;
-        } else {
-            mPasswordField.setError(null);
-        }
-        if (TextUtils.isEmpty(mName.getText().toString())) {
-            mName.setError("Required");
-            result = false;
-        } else {
-            mName.setError(null);
-        }
-
-        if (TextUtils.isEmpty(mPhone.getText().toString())) {
-            mPhone.setError("Required");
-            result = false;
-        } else {
-            mPhone.setError(null);
-        }
-        return result;
-    }
-
-    private void userdisplayname() {
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(mName.getText().toString())
-                .build();
-
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User profile updated.");
-                        }
-                    }
-                });
-    }
-
-    public void saveMap(){
-        userID = mAuth.getCurrentUser().getUid();
-        mDBRef = mDatabase.child("users").child("customer").child(userID);
-        Map<String, Object> userUpdates = new HashMap<>();
-        final String phone = mPhone.getText().toString();
-        userUpdates.put("phone", phone);
-        mDBRef.updateChildren(userUpdates);
-    }
-
 
 
     @Override
@@ -242,10 +142,11 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         int i = v.getId();
         if (i == R.id.button_sign_in) {
             signIn();
-        } else if (i == R.id.button_sign_up) {
+        } else if (i == R.id.fiel_RegisterTextView) {
             signUp();
         } else if (i == R.id.textviewForgetPassword){
             forgetPassword();
         }
     }
 }
+

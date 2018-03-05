@@ -136,31 +136,31 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String name = user.getDisplayName();
-            //Uri photoUrl = user.getPhotoUrl();
             boolean emailVerified = user.isEmailVerified();
             String uid = user.getUid();
             mName.setText(name);
+            if (user.getPhotoUrl()!=null){
+                String photodp = user.getPhotoUrl().toString();
+                Picasso.with(getActivity()).load(photodp).resize(150,150).centerCrop().into(mUserDP);
+            }}
 
-            mDBRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    String phone = dataSnapshot.child("phone").getValue().toString();
-                    mPhone.setText(phone);
+        mDBRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String phone = dataSnapshot.child("phone").getValue().toString();
+                mPhone.setText(phone);
 
-                    if (dataSnapshot.child("imageURI").getValue()!=null) {
-
+                if (dataSnapshot.child("imageURI").getValue()!=null) {
                     String imageuri = dataSnapshot.child("imageURI").getValue().toString();
-                    Picasso.with(getActivity()).load(imageuri).fit().centerCrop().into(mUserDP);
                     mImageLink.setText(imageuri);
-                    };
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-        }
+            }
+        });
     }
 
     public void saveimage(){
@@ -185,11 +185,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 mDP = taskSnapshot.getDownloadUrl();
                 mImageLink.setText(mDP.toString());
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(Uri.parse(mImageLink.getText().toString()))
+                        .build();
+
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User profile updated.");
+                                }
+                            }
+                        });
+
                 saveMap();
             }
         });
 
     }
+
     public void saveMap(){
         Map<String, Object> userUpdates = new HashMap<>();
         final String imageURI = mImageLink.getText().toString();
@@ -204,7 +221,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(mName.getText().toString())
+                    .setDisplayName(mName.getText().toString())
                 .setPhotoUri(Uri.parse(mImageLink.getText().toString()))
                 .build();
 

@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class ForgetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
+public class ForgetPasswordActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "ForgetPasswordActivity";
 

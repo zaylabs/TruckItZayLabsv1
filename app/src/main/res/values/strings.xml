@@ -17,6 +17,7 @@
     <string name="camera_button_text">Upload</string>
     <string name="imagelink">ImageLink</string>
     <string name="chooseimage">Choose Image:</string>
+    <string name="payment">Payment</string>
     <!--Registration-->
     <string name="Register_btn">Register</string>
     <string name="Email_Register">Email</string>
@@ -26,7 +27,7 @@
     <string name="Phone_Number">Enter Phone Number</string>
     <string name="Hint_Phone">+92 123 4567890</string>
     <string name="Company_Name">Company Name</string>
-
+    <string name="NotRegistered">Not Registered ?</string>
     <!--Forget Password-->
     <string name="Forget_Email">Email Address</string>
 
@@ -35,6 +36,7 @@
     <string name="Image_View">Image</string>
     <string name="Phone_Number1">Default Phone</string>
     <string name="Alt_Number">Alternate Number</string>
+
 
     <!--Cargo Details-->
     <string name="CargoDetail">Item Description</string>
@@ -61,6 +63,17 @@
     <string name="title_activity_maps">Map</string>
     <string name="profile">Profile</string>
 
+    <string name="CNIC">CNIC</string>
+    <string name="UploadLicense">Upload License</string>
+    <string name="VehicleRegistrationNumber">Vehicle Reg:Number</string>
+    <string name="CarType1">Suzuki</string>
+    <string name="CarTYpe2">Riksha</string>
+    <string name="AcceptTerms">Accept Terms</string>
+    <string name="ProfilePicture">Set Profile Piture</string>
+
+
+
+
     <string name="back">Return to Login</string>
     <string name="wallet">Wallet</string>
 
@@ -72,5 +85,30 @@
     <string name="customer_name">Name</string>
     <string name="customer_number">Phone</string>
     <string name="btn_confirm">Confirm</string>
+
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
+
+    <!--Location -->
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="last_update_time_label">Last location update time</string>
+
+    <string name="start_updates">Start updates</string>
+    <string name="stop_updates">Stop updates</string>
+
+    <string name="location_settings_inadequate_warning">The location settings on the device are not
+        adequate to run this sample. Fix in Settings.</string>
+
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core
+        functionality.</string>
+    <string name="settings">Settings</string>
+
+    <!--Location-->
+
+
 </resources>
 
