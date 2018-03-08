@@ -109,6 +109,43 @@
 
     <!--Location-->
 
+    <string name="drop_up_location">Drop up location</string>
+    <string name="pick_up_location">Pick up location</string>
+    <string name="direction_request">Direction Requesting........</string>
+    <string name="request_ride">Request Ride</string>
+    <string name="couldnt_get_location">couldn\'t get your location</string>
+    <string name="invalid_location">invalid location</string>
+    <string name="invalid_distance">invalid distance</string>
+    <string name="invalid_pickupaddress">invalid pickup address</string>
+    <string name="invalid_dropaddress">invalid drop address</string>
+    <string name="invalid_pickuplocation">invalid pickup location</string>
+    <string name="invalid_droplocation">invalid drop location</string>
+    <string name="ride_has_been_requested">Ride has been requested</string>
+    <string name="cancel">CANCEL</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="FROM">FROM</string>
+    <string name="TIME">TIME</string>
+    <string name="DRIVERNAME">DRIVER NAME</string>
+    <string name="TO">TO</string>
+    <string name="basefare">"Base Fare       "</string>
+    <string name="pickup_location">"Pickup Location       "</string>
+    <string name="drop_location">"Drop Location       "</string>
+    <string name="namee">"Name       "</string>
+    <string name="drivername">"Driver Number       "</string>
+    <string name="payment_status">"Payment Status       "</string>
+    <string name="mobile_numberr">"Mobile Number       "</string>
+    <string name="CUSTOMERNAME" >CUSTOMER NAME</string>
+    <string name="nodata_found">No Data Found</string>
+    <string name="vehicle_info">VEHICLE INFO</string>
+    <string name="ratekm">RATE / KM</string>
+    <string name="REQUEST_RIDE">REQUEST RIDE</string>
+    <string name="INVALID_DISTANCE">INVALID DISTANCE</string>
+    <string name="fare">"Fare       "</string>
+    <string name="ride_request">Ride Request</string>
+    <!-- getString(String, Object...) does not support HTML tags directly, they need to be encoded first.
+        Original string: <b>%1$s</b><br/><i>Place Id: %2$s</i><br/>Address: %3$s<br/>Phone: %4$s<br/>Website: %5$s-->
+
+    <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
 
 </resources>
 
