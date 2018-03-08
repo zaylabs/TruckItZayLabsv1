@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity
 
     private TextView mNameField, mEmail, mTextViewDP;
 
-    private ImageView mDisplayPic;
+    private ImageView mDisplayPic,mMyLocation, mClear;;
 
     private String userID;
     private Location mlat;
@@ -321,6 +321,26 @@ public class MainActivity extends AppCompatActivity
 
         mPickupText = findViewById(R.id.pickup_location);
         mDropOffText = findViewById(R.id.drop_location);
+        mMyLocation = findViewById(R.id.current_location);
+        mClear = findViewById(R.id.clear);
+
+        mMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(com.zaylabs.truckitzaylabsv1.MainActivity.this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+                startLocationUpdates();
+
+            }
+        });
+
+
+        mClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDropOffText.setText("");
+            }
+        });
 
         //AutoComplete Google Start
         mPickupText.setOnItemClickListener(mPickupTextClickListener);
@@ -381,7 +401,6 @@ public class MainActivity extends AppCompatActivity
         sMapFragment.getMapAsync(this);
 
         mRequestingLocationUpdates = true;
-
 
 
     }
@@ -509,7 +528,7 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         mMap = map;
         enableMyLocation();
-        setOnMyLocationButtonClick();
+    //  setOnMyLocationButtonClick();
         setOnMyLocationClick();
 
     }
@@ -533,8 +552,7 @@ public class MainActivity extends AppCompatActivity
         mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
-                Toast.makeText(com.zaylabs.truckitzaylabsv1.MainActivity.this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-                startLocationUpdates();
+
 
 
                     // Return false so that we don't consume the event and the default behavior still occurs
@@ -557,7 +575,7 @@ public class MainActivity extends AppCompatActivity
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+         //   mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
     }
 
