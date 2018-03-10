@@ -105,8 +105,11 @@ public class MainActivity extends AppCompatActivity
 
 
     public String mdistanceinKM;
+    public TextView mDistancetoPass;
     private Place mPlacePickup, mPlaceDrop;
     private FrameLayout mHeader;
+    private FrameLayout mFooter;
+    private TextView mRideNow;
     private GoogleApiClient mGoogleApiClient;
 
     //AutoComplete Google Sample Start
@@ -229,6 +232,9 @@ public class MainActivity extends AppCompatActivity
         mMyLocation = findViewById(R.id.current_location);
         mClear = findViewById(R.id.clear);
 
+        mFooter = findViewById(R.id.footerframe);
+        mRideNow = findViewById(R.id.request_rides);
+        mDistancetoPass=findViewById(R.id.distance_textview);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -435,6 +441,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.Home) {
             mHeader.setVisibility(View.VISIBLE);
+            mFooter.setVisibility(View.VISIBLE);
             if (id == R.id.Home) {
                 if (!sMapFragment.isAdded())
                     sFm.beginTransaction().add(R.id.map, sMapFragment).commit();
@@ -443,26 +450,31 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (id == R.id.Profile) {
             mHeader.setVisibility(View.GONE);
+            mFooter.setVisibility(View.GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new ProfileFragment());
             ft.commit();
         } else if (id == R.id.History) {
             mHeader.setVisibility(View.GONE);
+            mFooter.setVisibility(View.GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new HistoryFragment());
             ft.commit();
         } else if (id == R.id.wallet) {
             mHeader.setVisibility(View.GONE);
+            mFooter.setVisibility(View.GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new WalletFragment());
             ft.commit();
         } else if (id == R.id.cargo_calculator) {
             mHeader.setVisibility(View.GONE);
+            mFooter.setVisibility(View.GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new CargoCalculator());
             ft.commit();
         } else if (id == R.id.action_settings) {
             mHeader.setVisibility(View.GONE);
+            mFooter.setVisibility(View.GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new SettingsFragment());
             ft.commit();
@@ -470,6 +482,7 @@ public class MainActivity extends AppCompatActivity
             mAuth.signOut();
         } else if (id == R.id.get_help) {
             mHeader.setVisibility(View.GONE);
+            mFooter.setVisibility(View.GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new HelpFragment());
             ft.commit();
@@ -523,6 +536,7 @@ public class MainActivity extends AppCompatActivity
         setOnMyLocationButtonClick();
         setOnMyLocationClick();
         mHeader.setVisibility(View.VISIBLE);
+        mFooter.setVisibility(View.VISIBLE);
 
     }
 
@@ -727,6 +741,7 @@ public class MainActivity extends AppCompatActivity
                 mDropMarker = mMap.addMarker(new MarkerOptions().position(mDropLatLng)
                         .title(place.getName().toString()).draggable(true));
                 mdistanceinKM=distanceInKM();
+                mDistancetoPass.setText(mdistanceinKM);
                 Toast.makeText(MainActivity.this, "Distance in KM " + mdistanceinKM, Toast.LENGTH_SHORT).show();
                 // Display the third party attributions if set.
                 final CharSequence thirdPartyAttribution = places.getAttributions();
