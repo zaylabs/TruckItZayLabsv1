@@ -67,6 +67,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private String userID;
     private StorageReference mStorageRef;
     private Uri mDP;
+
     public ProfileFragment() {
 
         // Required empty public constructor

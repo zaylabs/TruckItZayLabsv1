@@ -49,6 +49,7 @@
     <string name="VehicleType2">Suzuki Closed</string>
     <string name="VehicleType3">Riksha</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="vehicle_name">"Vehicle Type       "</string>
 
     <!--Navigation-->
     <string name="navigation_drawer_open">Open navigation drawer</string>

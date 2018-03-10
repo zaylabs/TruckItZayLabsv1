@@ -75,6 +75,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
+import com.google.android.gms.nearby.messages.Distance;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -102,6 +103,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,OnMapReadyCallback,ActivityCompat.OnRequestPermissionsResultCallback {
 
+
+    public String mdistanceinKM;
     private Place mPlacePickup, mPlaceDrop;
     private FrameLayout mHeader;
     private GoogleApiClient mGoogleApiClient;
@@ -116,15 +119,15 @@ public class MainActivity extends AppCompatActivity
     private TextView mDropOffAttribution;
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-    private LatLng mPickUpLatLng, mDropLatLng;
+    public LatLng mPickUpLatLng, mDropLatLng;
     private PlaceDetectionClient mPlaceDetectionClient;
 
     //Maps
-    private Marker mNow;
+    private Marker mPickupMarker, mDropMarker;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
-    SupportMapFragment sMapFragment;
+    private SupportMapFragment sMapFragment;
 
     //Firebase
     private FirebaseAuth mAuth;
@@ -303,12 +306,15 @@ public class MainActivity extends AppCompatActivity
 
                 if (mCurrentLocation != null) {
                     mPickUpLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                    mPickupText.setText(mPickUpLatLng.latitude+", "+mPickUpLatLng.longitude);
+                    mPickupText.setText(mPickUpLatLng.latitude + ", " + mPickUpLatLng.longitude);
                     CameraUpdate mCameraCL = CameraUpdateFactory.newLatLngZoom(mPickUpLatLng, 18);
                     //mMap.moveCamera.(mCameraCL);
 
                     mMap.animateCamera(mCameraCL);
-                    mMap.addMarker(new MarkerOptions().position(mPickUpLatLng)
+                    if(mPickupMarker != null){
+                        mPickupMarker.remove();
+                    }
+                    mPickupMarker = mMap.addMarker(new MarkerOptions().position(mPickUpLatLng)
                             .title(mPickUpLatLng.toString()).draggable(true));
 
                 }
@@ -316,13 +322,14 @@ public class MainActivity extends AppCompatActivity
         });
 
         mClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDropOffText.setText("");
+                                      @Override
+                                      public void onClick(View v) {
+                                          mDropOffText.setText("");
 
+                                      }
 
-            }
         });
+
 
         mPickupText.setOnItemClickListener(mPickupTextClickListener);
         mDropOffText.setOnItemClickListener(mDropOffTextClickListener);
@@ -671,7 +678,10 @@ public class MainActivity extends AppCompatActivity
                 CameraUpdate mCameraCL = CameraUpdateFactory.newLatLngZoom(mPickUpLatLng, 18);
                 // mMap.moveCamera(mCameraCL);
                 mMap.animateCamera(mCameraCL);
-                mNow = mMap.addMarker(new MarkerOptions().position(mPickUpLatLng)
+                if(mPickupMarker != null){
+                    mPickupMarker.remove();
+                }
+                mPickupMarker = mMap.addMarker(new MarkerOptions().position(mPickUpLatLng)
                         .title(place.getName().toString()).draggable(true));
                 // Display the third party attributions if set.
                 final CharSequence thirdPartyAttribution = places.getAttributions();
@@ -711,6 +721,13 @@ public class MainActivity extends AppCompatActivity
                         place.getId(), place.getAddress(), place.getPhoneNumber(),
                         place.getWebsiteUri()));
                 mDropLatLng = place.getLatLng();
+                if(mDropMarker != null){
+                    mDropMarker.remove();
+                }
+                mDropMarker = mMap.addMarker(new MarkerOptions().position(mDropLatLng)
+                        .title(place.getName().toString()).draggable(true));
+                mdistanceinKM=distanceInKM();
+                Toast.makeText(MainActivity.this, "Distance in KM " + mdistanceinKM, Toast.LENGTH_SHORT).show();
                 // Display the third party attributions if set.
                 final CharSequence thirdPartyAttribution = places.getAttributions();
                 if (thirdPartyAttribution == null) {
@@ -1156,4 +1173,30 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    private String distanceInKM() {
+
+        Location loc1 = new Location("");
+        loc1.setLatitude(mPickUpLatLng.latitude);
+        loc1.setLongitude(mPickUpLatLng.longitude);
+
+        Location loc2 = new Location("");
+        loc2.setLatitude(mDropLatLng.latitude);
+        loc2.setLongitude(mDropLatLng.longitude);
+
+        float distance = loc1.distanceTo(loc2)/1000;
+            /*Double mpickuplongitude = mPickUpLatLng.longitude;
+            Double mpickuplatitude= mPickUpLatLng.latitude;
+            Double mdroplongitude= mDropLatLng.longitude;
+            Double mdroplatitude=mDropLatLng.latitude;
+            Location mDistance = new Location("ServiceProvider");
+            float[] results =  new float[1];
+            mDistance.distanceBetween(mpickuplatitude,mdroplatitude,mpickuplongitude,mdroplongitude,results);
+
+            return results[0];*/
+        // }
+        return String.valueOf(distance);
+    }
+
 }
+
