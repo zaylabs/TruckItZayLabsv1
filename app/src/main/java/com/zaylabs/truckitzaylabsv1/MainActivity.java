@@ -16,6 +16,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -82,8 +83,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 
@@ -96,19 +100,24 @@ import com.zaylabs.truckitzaylabsv1.fragment.SettingsFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.WalletFragment;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+
+import static android.view.View.GONE;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,OnMapReadyCallback,ActivityCompat.OnRequestPermissionsResultCallback {
 
 
+    public android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
     public String mdistanceinKM;
     public TextView mDistancetoPass;
     private Place mPlacePickup, mPlaceDrop;
-    private FrameLayout mHeader;
-    private FrameLayout mFooter;
+    public FrameLayout mHeader;
+    public FrameLayout mFooter;
     private TextView mRideNow;
     private GoogleApiClient mGoogleApiClient;
 
@@ -129,14 +138,16 @@ public class MainActivity extends AppCompatActivity
     private Marker mPickupMarker, mDropMarker;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
-    private GoogleMap mMap;
-    private SupportMapFragment sMapFragment;
+    public GoogleMap mMap;
+    public SupportMapFragment sMapFragment;
+    public String mDropName;
 
     //Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private DatabaseReference mfirebaseDB;
-
+    private DatabaseReference mAviableRikshaDrivers;
+    private DatabaseReference mAviableSuzukiDrivers;
     //Layout
     private TextView mNameField, mEmail, mTextViewDP;
     private ImageView mDisplayPic, mMyLocation, mClear;
@@ -214,13 +225,18 @@ public class MainActivity extends AppCompatActivity
     private String mLastUpdateTime;
 
     //*******************************Location Update End********************************
-
+    DrawerLayout drawer;
+    ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         sMapFragment = SupportMapFragment.newInstance();
+
+
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -236,6 +252,30 @@ public class MainActivity extends AppCompatActivity
         mRideNow = findViewById(R.id.request_rides);
         mDistancetoPass=findViewById(R.id.distance_textview);
 
+        mRideNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mDistancetoPass.getText()!="") {
+                    FragmentManager fm = getFragmentManager();
+                    android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
+                    sFm.beginTransaction().hide(sMapFragment).commit();
+                    mHeader.setVisibility(GONE);
+                    mFooter.setVisibility(GONE);
+                    setDrawerState(false);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.cm, new CargoCalculator());
+                    ft.commit();
+
+                }else {
+                    Toast.makeText(MainActivity.this, "Kindly add PickUp and Drop-Off Location", Toast.LENGTH_SHORT).show();
+                };
+
+                }
+
+        });
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,11 +286,12 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+       // toggle.syncState();
+        setDrawerState(true);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
@@ -281,6 +322,8 @@ public class MainActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
         mfirebaseDB = FirebaseDatabase.getInstance().getReference().child("Users").child("customer").child(userID);
+        mAviableRikshaDrivers = FirebaseDatabase.getInstance().getReference().child("driversAvailable").child("VT2").child(userID);
+        mAviableSuzukiDrivers = FirebaseDatabase.getInstance().getReference().child("driversAvailable").child("VT1").child(userID);
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
@@ -331,6 +374,7 @@ public class MainActivity extends AppCompatActivity
                                       @Override
                                       public void onClick(View v) {
                                           mDropOffText.setText("");
+                                          mDistancetoPass.setText("");
 
                                       }
 
@@ -389,8 +433,9 @@ public class MainActivity extends AppCompatActivity
 
 
         //**************************************Location update End ****************************8
-
+        mDistancetoPass.setText("");
     }
+
 
 
     @Override
@@ -406,9 +451,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -431,7 +479,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         FragmentManager fm = getFragmentManager();
-        android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
+
 
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -449,40 +497,40 @@ public class MainActivity extends AppCompatActivity
                     sFm.beginTransaction().show(sMapFragment).commit();
             }
         } else if (id == R.id.Profile) {
-            mHeader.setVisibility(View.GONE);
-            mFooter.setVisibility(View.GONE);
+            mHeader.setVisibility(GONE);
+            mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new ProfileFragment());
             ft.commit();
         } else if (id == R.id.History) {
-            mHeader.setVisibility(View.GONE);
-            mFooter.setVisibility(View.GONE);
+            mHeader.setVisibility(GONE);
+            mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new HistoryFragment());
             ft.commit();
         } else if (id == R.id.wallet) {
-            mHeader.setVisibility(View.GONE);
-            mFooter.setVisibility(View.GONE);
+            mHeader.setVisibility(GONE);
+            mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new WalletFragment());
             ft.commit();
         } else if (id == R.id.cargo_calculator) {
-            mHeader.setVisibility(View.GONE);
-            mFooter.setVisibility(View.GONE);
+            mHeader.setVisibility(GONE);
+            mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new CargoCalculator());
             ft.commit();
         } else if (id == R.id.action_settings) {
-            mHeader.setVisibility(View.GONE);
-            mFooter.setVisibility(View.GONE);
+            mHeader.setVisibility(GONE);
+            mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new SettingsFragment());
             ft.commit();
         } else if (id == R.id.logout) {
             mAuth.signOut();
         } else if (id == R.id.get_help) {
-            mHeader.setVisibility(View.GONE);
-            mFooter.setVisibility(View.GONE);
+            mHeader.setVisibility(GONE);
+            mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.cm, new HelpFragment());
             ft.commit();
@@ -504,10 +552,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
         mAuth.removeAuthStateListener(firebaseAuthListener);
         stopLocationUpdates();
+        super.onDestroy();
+
+    }
+
+
+
+    @Override
+    protected void onStop() {
+        mAuth.removeAuthStateListener(firebaseAuthListener);
+        stopLocationUpdates();
+        super.onStop();
 
     }
 
@@ -526,7 +584,10 @@ public class MainActivity extends AppCompatActivity
                 Picasso.with(hView.getContext()).load(photodp).resize(150, 150).centerCrop().into(mDisplayPic);
             }
         }
+
     }
+
+
 
 
     @Override
@@ -700,7 +761,7 @@ public class MainActivity extends AppCompatActivity
                 // Display the third party attributions if set.
                 final CharSequence thirdPartyAttribution = places.getAttributions();
                 if (thirdPartyAttribution == null) {
-                    mPickUpAttribution.setVisibility(View.GONE);
+                    mPickUpAttribution.setVisibility(GONE);
                 } else {
                     mPickUpAttribution.setVisibility(View.VISIBLE);
                     mPickUpAttribution.setText(
@@ -735,6 +796,7 @@ public class MainActivity extends AppCompatActivity
                         place.getId(), place.getAddress(), place.getPhoneNumber(),
                         place.getWebsiteUri()));
                 mDropLatLng = place.getLatLng();
+                mDropName= place.getName().toString();
                 if(mDropMarker != null){
                     mDropMarker.remove();
                 }
@@ -746,7 +808,7 @@ public class MainActivity extends AppCompatActivity
                 // Display the third party attributions if set.
                 final CharSequence thirdPartyAttribution = places.getAttributions();
                 if (thirdPartyAttribution == null) {
-                    mDropOffAttribution.setVisibility(View.GONE);
+                    mDropOffAttribution.setVisibility(GONE);
                 } else {
                     mDropOffAttribution.setVisibility(View.VISIBLE);
                     mDropOffAttribution.setText(
@@ -1189,7 +1251,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     private String distanceInKM() {
+
 
         Location loc1 = new Location("");
         loc1.setLatitude(mPickUpLatLng.latitude);
@@ -1212,6 +1276,20 @@ public class MainActivity extends AppCompatActivity
         // }
         return String.valueOf(distance);
     }
+    public void setDrawerState(boolean isEnabled) {
+        if ( isEnabled ) {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
+            toggle.setDrawerIndicatorEnabled(true);
+            toggle.syncState();
 
+        }
+        else {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            toggle.setDrawerIndicatorEnabled(false);
+            toggle.syncState();
+        }
+    }
 }
 
