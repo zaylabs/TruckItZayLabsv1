@@ -85,25 +85,45 @@ public class CargoCalculator extends Fragment {
     private TextView mfare, mdistance;
     private CheckBox mDriverLoading;
     private String mDistancePassed;
-//GeoFire
-    private DatabaseReference mdriverSuzukiLocation;
+    //GeoFire
+    private DatabaseReference mSuzukiDriverLocation;
+    private DatabaseReference mRikshaDriverLocation;
     private GeoFire mgeoFire;
-    private int radius = 1;
-    private Boolean driverFound = false;
-    private String driverFoundID;
+    private int mRadius = 1;
+    private Boolean mdriverFound = false;
+    private String mdriverFoundID;
     private LatLng mPickupLocation;
-    private GeoQuery geoQuery;
+    private GeoQuery mgeoQuery;
     private Boolean requestBol = false;
     private String requestService;
-    private String Destination;
-    private LatLng destinationLatLng;
+    private String mDropPlaceName;
+    private LatLng mDropLatLng;
     private LinearLayout mDriverInfo;
     private ImageView mDriverProfileImage;
     private TextView mDriverName, mDriverPhone, mDriverCar;
     private Marker mDriverMarker;
-    private DatabaseReference driverLocationRef;
-    private ValueEventListener driverLocationRefListener;
+    private DatabaseReference SuzukiDriverRef;
+    private ValueEventListener SuzukiDriverLocationRefListener;
     private RatingBar mRatingBar;
+    private DatabaseReference mCRRef;
+
+    //Suzuki Driver Found
+    private int suzukiRadius = 1;
+    private boolean suzukiDriverFound = false;
+    private String suzukiDriverFoundID;
+
+
+    private GeoFire geoSuzukiFire;
+    private GeoQuery geoSuzukiQuery;
+    private GeoFire geoRikshaFire;
+    private GeoQuery geoRikshaQuery;
+
+
+    //Riksha Driver Found
+    private int rikshaRadius = 1;
+    private boolean riskshaDriverFound = false;
+    private String rikshaDriverFoundID;
+
 
     public CargoCalculator() {
         // Required empty public constructor
@@ -125,9 +145,14 @@ public class CargoCalculator extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         userID = mAuth.getCurrentUser().getUid();
         mDBRef = mDatabase.child("CurrentRide");
-        mdriverSuzukiLocation= mDatabase.child("driversAvailable").child("VT1");
-        mgeoFire = new GeoFire(mdriverSuzukiLocation);
-
+        mSuzukiDriverLocation = mDatabase.child("driversAvailable").child("VT1");
+        mRikshaDriverLocation = mDatabase.child("driversAvailable").child("VT2");
+        mgeoFire = new GeoFire(mSuzukiDriverLocation);
+        mCRRef = FirebaseDatabase.getInstance().getReference("customerRequest").child(userID);
+        geoSuzukiFire = new GeoFire(mSuzukiDriverLocation);
+//        geoSuzukiQuery = geoSuzukiFire.queryAtLocation(new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), suzukiRadius);
+        geoRikshaFire = new GeoFire(mRikshaDriverLocation);
+  //      geoRikshaQuery = geoSuzukiFire.queryAtLocation(new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), suzukiRadius);
 
         mDesc = view.findViewById(R.id.txt_Desc);
         mfare = view.findViewById(R.id.txt_fare);
@@ -143,13 +168,13 @@ public class CargoCalculator extends Fragment {
         mDriverLoading = view.findViewById(R.id.dirver_loading);
         mPickupLocation = new LatLng(((MainActivity) getActivity()).mPickUpLatLng.latitude, ((MainActivity) getActivity()).mPickUpLatLng.longitude);
 
-        destinationLatLng = ((MainActivity) getActivity()).mDropLatLng;
-        Destination = ((MainActivity) getActivity()).mDropName;
+        mDropLatLng = ((MainActivity) getActivity()).mDropLatLng;
+        mDropPlaceName = ((MainActivity) getActivity()).mDropName;
         mDriverInfo = view.findViewById(R.id.driverInfo);
 
         mDriverProfileImage = view.findViewById(R.id.driverProfileImage);
 
-        mDriverName =view.findViewById(R.id.driverName);
+        mDriverName = view.findViewById(R.id.driverName);
         mDriverPhone = view.findViewById(R.id.driverPhone);
         mDriverCar = view.findViewById(R.id.driverCar);
 
@@ -169,11 +194,11 @@ public class CargoCalculator extends Fragment {
 
                 switch (index) {
                     case 0: // first button
-                        requestService= mCarType1.getText().toString();
+                        requestService = mCarType1.getText().toString();
                         fareCarType1Calculator();
                         break;
                     case 1: // secondbutton
-                        requestService= mCarType2.getText().toString();
+                        requestService = mCarType2.getText().toString();
                         fareCarType2Calculator();
                 }
             }
@@ -182,22 +207,36 @@ public class CargoCalculator extends Fragment {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                geoSuzukiQuery.removeAllListeners();
+                geoRikshaQuery.removeAllListeners();
                 ((MainActivity) getActivity()).mHeader.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).mFooter.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).setDrawerState(true);
-                   if (!((MainActivity) getActivity()).sMapFragment.isAdded())
-                       ((MainActivity) getActivity()).sFm.beginTransaction().add(R.id.map, ((MainActivity) getActivity()).sMapFragment).commit();
-                    else
-                       ((MainActivity) getActivity()).sFm.beginTransaction().show(((MainActivity) getActivity()).sMapFragment).commit();
+                if (!((MainActivity) getActivity()).sMapFragment.isAdded())
+                    ((MainActivity) getActivity()).sFm.beginTransaction().add(R.id.map, ((MainActivity) getActivity()).sMapFragment).commit();
+                else
+                    ((MainActivity) getActivity()).sFm.beginTransaction().show(((MainActivity) getActivity()).sMapFragment).commit();
             }
-            });
+        });
 
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
-                GeoFire geoFire = new GeoFire(ref);
-                geoFire.setLocation(userID, new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), new GeoFire.CompletionListener() {
+
+                GeoFire geoFireCR = new GeoFire(mCRRef);
+                geoFireCR.setLocation("PickUpLocation", new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        if (error != null) {
+                            Toast.makeText(view.getContext(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(view.getContext(), "Location saved on server successfully!", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+
+                });
+                geoFireCR.setLocation("DropLocation", new GeoLocation(mDropLatLng.latitude, mDropLatLng.longitude), new GeoFire.CompletionListener() {
                     @Override
                     public void onComplete(String key, DatabaseError error) {
                         if (error != null) {
@@ -210,10 +249,15 @@ public class CargoCalculator extends Fragment {
 
                 });
 
+                if (!(mCarType2.isChecked())) {
+                    mConfirm.setText("Getting your Suzuki Driver....");
+                   // getSuzukiDriver();
+                } else if (!(mCarType1.isChecked())) {
+                    mConfirm.setText("Getting your Riksha Driver....");
+                    //getRikshaDriver();
+                }
+                ;
 
-                mConfirm.setText("Getting your Driver....");
-
-                getClosestSuzukiDriver();
             }
         });
         return view;
@@ -225,14 +269,14 @@ public class CargoCalculator extends Fragment {
         Double b;
         Double a = Double.parseDouble(mdistance.getText().toString().trim());
         if (!(mCarType2.isChecked())) {
-            b = a * 200;
+            b = (a * 200) + 600;
             if ((mDriverLoading.isChecked())) {
                 result = b + 150;
             } else {
                 result = b;
             }
         }
-        String results= result.toString();
+            String results = result.toString();
         mfare.setText(results);
     }
 
@@ -242,66 +286,31 @@ public class CargoCalculator extends Fragment {
         Double a = Double.parseDouble(mdistance.getText().toString().trim());
 
         if (!(mCarType1.isChecked())) {
-            b = a * 90;
+            b = (a * 90) + 270;
             if ((mDriverLoading.isChecked())) {
                 result = b + 150;
             } else {
                 result = b;
             }
         }
-        String results= result.toString();
+        String results = result.toString();
         mfare.setText(results);
     }
 
 // **********************************Get CLosest Driver ******************************************************
 
+/*
+    private void getSuzukiDriver() {
 
+        geoSuzukiQuery.removeAllListeners();
 
-
-
-    private void getClosestSuzukiDriver(){
-
-        geoQuery = mgeoFire.queryAtLocation(new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), radius);
-        geoQuery.removeAllListeners();
-
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+        geoSuzukiQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if (!driverFound && requestBol){
-                    DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("users").child("driver").child(key);
-                    mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
-                                Map<String, Object> driverMap = (Map<String, Object>) dataSnapshot.getValue();
-                                if (driverFound){
-                                    return;
-                                }
-
-                                if(driverMap.get("service").equals(requestService)){
-                                    driverFound = true;
-                                    driverFoundID = dataSnapshot.getKey();
-
-                                    DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("users").child("drivers").child(driverFoundID).child("customerRequest");
-                                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    HashMap map = new HashMap();
-                                    map.put("customerRideId", customerId);
-                                    map.put("destination", Destination);
-                                    map.put("destinationLat", destinationLatLng.latitude);
-                                    map.put("destinationLng", destinationLatLng.longitude);
-                                    driverRef.updateChildren(map);
-
-                                    getDriverLocation();
-                                    getDriverInfo();
-                                    getHasRideEnded();
-                                    mConfirm.setText("Looking for Driver Location....");
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                if (!suzukiDriverFound) {
+                    suzukiDriverFound = true;
+                    suzukiDriverFoundID = key;
+                    mConfirm.setText(suzukiDriverFoundID);
                 }
             }
 
@@ -317,10 +326,9 @@ public class CargoCalculator extends Fragment {
 
             @Override
             public void onGeoQueryReady() {
-                if (!driverFound)
-                {
-                    radius++;
-                    getClosestSuzukiDriver();
+                if (!suzukiDriverFound) {
+                    suzukiRadius++;
+                    getSuzukiDriver();
                 }
             }
 
@@ -332,153 +340,48 @@ public class CargoCalculator extends Fragment {
     }
 
 
-    private void getDriverLocation(){
-        driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversWorking").child(driverFoundID).child("l");
-        driverLocationRefListener = driverLocationRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && requestBol){
-                    List<Object> map = (List<Object>) dataSnapshot.getValue();
-                    double locationLat = 0;
-                    double locationLng = 0;
-                    if(map.get(0) != null){
-                        locationLat = Double.parseDouble(map.get(0).toString());
-                    }
-                    if(map.get(1) != null){
-                        locationLng = Double.parseDouble(map.get(1).toString());
-                    }
-                    LatLng driverLatLng = new LatLng(locationLat,locationLng);
-                    if(mDriverMarker != null){
-                        mDriverMarker.remove();
-                    }
-                    Location loc1 = new Location("");
-                    loc1.setLatitude(mPickupLocation.latitude);
-                    loc1.setLongitude(mPickupLocation.longitude);
+    private void getRikshaDriver() {
 
-                    Location loc2 = new Location("");
-                    loc2.setLatitude(driverLatLng.latitude);
-                    loc2.setLongitude(driverLatLng.longitude);
+            geoRikshaQuery.removeAllListeners();
 
-                    float distance = loc1.distanceTo(loc2);
-
-                    if (distance<100){
-                        mConfirm.setText("Driver's Here");
-                    }else{
-                        mConfirm.setText("Driver Found: " + String.valueOf(distance));
-                    }
-
-
-
-                   // mDriverMarker = ((MainActivity) getActivity()).mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-    }
-
-    /*-------------------------------------------- getDriverInfo -----
-    |  Function(s) getDriverInfo
-    |
-    |  Purpose:  Get all the user information that we can get from the user's database.
-    |
-    |  Note: --
-    |
-    *-------------------------------------------------------------------*/
-    private void getDriverInfo(){
-        mDriverInfo.setVisibility(View.VISIBLE);
-        DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("users").child("drivers").child(driverFoundID);
-        mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
-                    if(dataSnapshot.child("name")!=null){
-                        mDriverName.setText(dataSnapshot.child("name").getValue().toString());
-                    }
-                    if(dataSnapshot.child("phone")!=null){
-                        mDriverPhone.setText(dataSnapshot.child("phone").getValue().toString());
-                    }
-                    if(dataSnapshot.child("car")!=null){
-                        mDriverCar.setText(dataSnapshot.child("reg_number").getValue().toString());
-                    }
-                    /*if(dataSnapshot.child("profileImageUrl").getValue()!=null){
-                        Glide.with(getApplication()).load(dataSnapshot.child("profileImageUrl").getValue().toString()).into(mDriverProfileImage);
-                        Picasso.with(getView().getContext()).load(photodp).resize(150, 150).centerCrop().into(mDisplayPic);
-                    }*/
-
-                    int ratingSum = 0;
-                    float ratingsTotal = 0;
-                    float ratingsAvg = 0;
-                    for (DataSnapshot child : dataSnapshot.child("rating").getChildren()){
-                        ratingSum = ratingSum + Integer.valueOf(child.getValue().toString());
-                        ratingsTotal++;
-                    }
-                    if(ratingsTotal!= 0){
-                        ratingsAvg = ratingSum/ratingsTotal;
-                        mRatingBar.setRating(ratingsAvg);
+            geoRikshaQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(String key, GeoLocation location) {
+                    if (!riskshaDriverFound) {
+                        riskshaDriverFound = true;
+                        rikshaDriverFoundID = key;
+                        mConfirm.setText(rikshaDriverFoundID);
                     }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-    private DatabaseReference driveHasEndedRef;
-    private ValueEventListener driveHasEndedRefListener;
-    private void getHasRideEnded(){
-        driveHasEndedRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest").child("customerRideId");
-        driveHasEndedRefListener = driveHasEndedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
 
-                }else{
-                    endRide();
+                @Override
+                public void onKeyExited(String key) {
+
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
 
-    private void endRide(){
-        requestBol = false;
-        geoQuery.removeAllListeners();
-        driverLocationRef.removeEventListener(driverLocationRefListener);
-        driveHasEndedRef.removeEventListener(driveHasEndedRefListener);
+                }
 
-        if (driverFoundID != null){
-            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("users").child("drivers").child(driverFoundID).child("customerRequest");
-            driverRef.removeValue();
-            driverFoundID = null;
+                @Override
+                public void onGeoQueryReady() {
+                    if (!riskshaDriverFound) {
+                        rikshaRadius++;
+                        getRikshaDriver();
+                        mConfirm.setText(suzukiDriverFoundID);
+                    }
+                }
 
-        }
-        driverFound = false;
-        radius = 1;
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userID);
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
 
+                }
+            });
 
-        mConfirm.setText("Confirm");
-
-        mDriverInfo.setVisibility(View.GONE);
-        mDriverName.setText("");
-        mDriverPhone.setText("");
-        mDriverCar.setText("Destination: --");
-        mDriverProfileImage.setImageResource(R.drawable.user_default);
-    }
-
-
+        }*/
 }
+
 
 
 

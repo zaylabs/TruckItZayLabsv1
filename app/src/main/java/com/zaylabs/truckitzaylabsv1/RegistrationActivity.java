@@ -182,6 +182,10 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         Map<String, Object> userUpdates = new HashMap<>();
         final String phone = mPhone.getText().toString();
         userUpdates.put("phone", phone);
+        final String name = mName.getText().toString();
+        userUpdates.put("name", name);
+        final String email=mAuth.getCurrentUser().getEmail();
+        userUpdates.put("email", email);
 
         mDBRef.updateChildren(userUpdates);
     }
