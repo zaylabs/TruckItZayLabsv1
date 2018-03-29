@@ -45,6 +45,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -65,6 +67,8 @@ import static android.view.View.VISIBLE;
  */
 public class CargoCalculator extends Fragment {
 
+
+    private FirebaseFirestore db;
     //Firebase Start
     private StorageReference mImageRef;
     private DatabaseReference mDBRef;
@@ -140,19 +144,20 @@ public class CargoCalculator extends Fragment {
         //Firebase Start
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
+        db = FirebaseFirestore.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         userID = mAuth.getCurrentUser().getUid();
         mDBRef = mDatabase.child("CurrentRide");
-        mSuzukiDriverLocation = mDatabase.child("driversAvailable").child("VT1");
+        /*mSuzukiDriverLocation = mDatabase.child("driversAvailable").child("VT1");
         mRikshaDriverLocation = mDatabase.child("driversAvailable").child("VT2");
         mgeoFire = new GeoFire(mSuzukiDriverLocation);
         mCRRef = FirebaseDatabase.getInstance().getReference("customerRequest").child(userID);
         geoSuzukiFire = new GeoFire(mSuzukiDriverLocation);
 //        geoSuzukiQuery = geoSuzukiFire.queryAtLocation(new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), suzukiRadius);
         geoRikshaFire = new GeoFire(mRikshaDriverLocation);
-  //      geoRikshaQuery = geoSuzukiFire.queryAtLocation(new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), suzukiRadius);
+*/  //      geoRikshaQuery = geoSuzukiFire.queryAtLocation(new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), suzukiRadius);
 
         mDesc = view.findViewById(R.id.txt_Desc);
         mfare = view.findViewById(R.id.txt_fare);
@@ -207,8 +212,8 @@ public class CargoCalculator extends Fragment {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                geoSuzukiQuery.removeAllListeners();
-                geoRikshaQuery.removeAllListeners();
+                /*geoSuzukiQuery.removeAllListeners();
+                geoRikshaQuery.removeAllListeners();*/
                 ((MainActivity) getActivity()).mHeader.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).mFooter.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).setDrawerState(true);
@@ -222,8 +227,15 @@ public class CargoCalculator extends Fragment {
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Map<String, Object> requestmap = new HashMap<>();
+                GeoPoint pickup = new GeoPoint(mPickupLocation.latitude,mPickupLocation.longitude);
+                requestmap.put("pickup", pickup);
+                GeoPoint drop=new GeoPoint(mDropLatLng.latitude,mDropLatLng.longitude);
+                requestmap.put("drop", drop);
+                db.collection("customerRequest").document(userID).set(requestmap);
 
-                GeoFire geoFireCR = new GeoFire(mCRRef);
+
+                /*GeoFire geoFireCR = new GeoFire(mCRRef);
                 geoFireCR.setLocation("PickUpLocation", new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), new GeoFire.CompletionListener() {
                     @Override
                     public void onComplete(String key, DatabaseError error) {
@@ -248,7 +260,7 @@ public class CargoCalculator extends Fragment {
                     }
 
                 });
-
+*/
                 if (!(mCarType2.isChecked())) {
                     mConfirm.setText("Getting your Suzuki Driver....");
                    // getSuzukiDriver();

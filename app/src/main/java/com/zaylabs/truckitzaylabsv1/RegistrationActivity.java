@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
     private EditText mName;
     private String userID;
     private ImageView mImageurl;
-
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,8 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         mImageurl = findViewById(R.id.displaypic);
         // Click listeners
         mSignUpButton.setOnClickListener(this);
+        db = FirebaseFirestore.getInstance();
+
 
     }
 
@@ -188,6 +191,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         userUpdates.put("email", email);
 
         mDBRef.updateChildren(userUpdates);
+        db.collection("customers").document(userID).set(userUpdates);
     }
 
 

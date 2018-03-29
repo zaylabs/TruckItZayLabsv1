@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "1043887969653",
-    "firebase_url": "https://truckitzaylabsv1.firebaseio.com",
-    "project_id": "truckitzaylabsv1",
-    "storage_bucket": "truckitzaylabsv1.appspot.com"
+    "project_number": "435716523665",
+    "firebase_url": "https://zaylabsapp.firebaseio.com",
+    "project_id": "zaylabsapp",
+    "storage_bucket": "zaylabsapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1043887969653:android:cf32144f13845bbf",
+        "mobilesdk_app_id": "1:435716523665:android:9b33e8be6ee85997",
         "android_client_info": {
-          "package_name": "com.zaylabs.truckitzaylabsv1driver"
+          "package_name": "com.zaylabs.truckitzaylabsv1"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1043887969653-8r97r5qubh796va5ua5mv3oqngerhb7i.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zaylabs.truckitzaylabsv1driver",
-            "certificate_hash": "3b8608d4beb9dc1f74c41a3b3cdb09595e45a9f0"
-          }
-        },
-        {
-          "client_id": "1043887969653-3v2o8ou2hi4gsc59uhb310auc46jd90g.apps.googleusercontent.com",
+          "client_id": "435716523665-51rmfrk6mi4lu39nkie0pfg3v6ppjqig.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFbMb3njrovcSbuIgc_w0DyzLLXeBu6bc"
+          "current_key": "AIzaSyBY0ZjyIWWTXMuPMia8kCr1sh0I57VRQBg"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1043887969653-3v2o8ou2hi4gsc59uhb310auc46jd90g.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
@@ -52,28 +39,28 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1043887969653:android:9b33e8be6ee85997",
+        "mobilesdk_app_id": "1:435716523665:android:57248982d4c8b556",
         "android_client_info": {
-          "package_name": "com.zaylabs.truckitzaylabsv1"
+          "package_name": "com.zaylabs.zaylabsapp1"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1043887969653-sukigreg09j85pmdhm1ehmhfiq0598f2.apps.googleusercontent.com",
+          "client_id": "435716523665-hbvau5pu60poido9nk5gi49c1m19j36t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.zaylabs.truckitzaylabsv1",
-            "certificate_hash": "3b8608d4beb9dc1f74c41a3b3cdb09595e45a9f0"
+            "package_name": "com.zaylabs.zaylabsapp1",
+            "certificate_hash": "e320804759310131767630865e9c08fa558f3f05"
           }
         },
         {
-          "client_id": "1043887969653-3v2o8ou2hi4gsc59uhb310auc46jd90g.apps.googleusercontent.com",
+          "client_id": "435716523665-51rmfrk6mi4lu39nkie0pfg3v6ppjqig.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFbMb3njrovcSbuIgc_w0DyzLLXeBu6bc"
+          "current_key": "AIzaSyBY0ZjyIWWTXMuPMia8kCr1sh0I57VRQBg"
         }
       ],
       "services": {
@@ -84,7 +71,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1043887969653-3v2o8ou2hi4gsc59uhb310auc46jd90g.apps.googleusercontent.com",
+              "client_id": "435716523665-51rmfrk6mi4lu39nkie0pfg3v6ppjqig.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
