@@ -232,6 +232,7 @@ public class CargoCalculator extends Fragment {
                 requestmap.put("pickup", pickup);
                 GeoPoint drop=new GeoPoint(mDropLatLng.latitude,mDropLatLng.longitude);
                 requestmap.put("drop", drop);
+
                 db.collection("customerRequest").document(userID).set(requestmap);
 
 
@@ -263,10 +264,10 @@ public class CargoCalculator extends Fragment {
 */
                 if (!(mCarType2.isChecked())) {
                     mConfirm.setText("Getting your Suzuki Driver....");
-                   // getSuzukiDriver();
+                    db.collection("suzukicustomerRequest").document(userID).set(requestmap);
                 } else if (!(mCarType1.isChecked())) {
                     mConfirm.setText("Getting your Riksha Driver....");
-                    //getRikshaDriver();
+                    db.collection("rikshacustomerRequest").document(userID).set(requestmap);
                 }
                 ;
 
