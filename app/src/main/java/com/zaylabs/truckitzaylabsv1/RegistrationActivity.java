@@ -28,9 +28,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.zaylabs.truckitzaylabsv1.DTO.userProfile;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class RegistrationActivity extends BaseActivity implements View.OnClickListener{
@@ -180,18 +184,18 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 
     public void saveMap() {
 
-        userID = mAuth.getCurrentUser().getUid();
-        mDBRef = mDatabase.child("users").child("customer").child(userID);
-        Map<String, Object> userUpdates = new HashMap<>();
-        final String phone = mPhone.getText().toString();
-        userUpdates.put("phone", phone);
-        final String name = mName.getText().toString();
-        userUpdates.put("name", name);
-        final String email=mAuth.getCurrentUser().getEmail();
-        userUpdates.put("email", email);
 
-        mDBRef.updateChildren(userUpdates);
-        db.collection("customers").document(userID).set(userUpdates);
+        userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        final String phone = mPhone.getText().toString();
+        final String email=mAuth.getCurrentUser().getEmail();
+        final String name = mName.getText().toString();
+        final String dpURL = null;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("  dd / MM / yyyy ");
+        String createDate = mdformat.format(calendar.getTime());
+        String profileUpdateDateTime=(calendar.getTime()).toString();
+        userProfile profile = new userProfile(name,email,dpURL,phone,createDate,profileUpdateDateTime);
+        db.collection("customers").document(userID).set(profile);
     }
 
 

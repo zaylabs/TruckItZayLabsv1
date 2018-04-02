@@ -39,17 +39,23 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+import com.zaylabs.truckitzaylabsv1.DTO.customerRequest;
+import com.zaylabs.truckitzaylabsv1.DTO.userProfile;
 import com.zaylabs.truckitzaylabsv1.MainActivity;
 import com.zaylabs.truckitzaylabsv1.R;
 
@@ -58,6 +64,7 @@ import com.zaylabs.truckitzaylabsv1.SignInActivity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -128,6 +135,7 @@ public class CargoCalculator extends Fragment {
     private boolean riskshaDriverFound = false;
     private String rikshaDriverFoundID;
 
+    String phone;
 
     public CargoCalculator() {
         // Required empty public constructor
@@ -200,12 +208,10 @@ public class CargoCalculator extends Fragment {
                 switch (index) {
                     case 0: // first button
                         requestService = mCarType1.getText().toString();
-                        fareCarType1Calculator();
                         break;
                     case 1: // secondbutton
                         requestService = mCarType2.getText().toString();
-                        fareCarType2Calculator();
-                }
+                        }
             }
         });
 
@@ -227,47 +233,34 @@ public class CargoCalculator extends Fragment {
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String, Object> requestmap = new HashMap<>();
+                DocumentReference docRef = db.collection("customers").document(userID);
+
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        userProfile profile = documentSnapshot.toObject(userProfile.class);
+                        phone=profile.getPhone();
+
+
+                    }
+                });
+
+
                 GeoPoint pickup = new GeoPoint(mPickupLocation.latitude,mPickupLocation.longitude);
-                requestmap.put("pickup", pickup);
                 GeoPoint drop=new GeoPoint(mDropLatLng.latitude,mDropLatLng.longitude);
-                requestmap.put("drop", drop);
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String name = Objects.requireNonNull(user).getDisplayName();
+                String photodp = Objects.requireNonNull(user.getPhotoUrl()).toString();
+                customerRequest customerRequest=new customerRequest(name,phone,pickup,drop,photodp);
 
-                db.collection("customerRequest").document(userID).set(requestmap);
 
-
-                /*GeoFire geoFireCR = new GeoFire(mCRRef);
-                geoFireCR.setLocation("PickUpLocation", new GeoLocation(mPickupLocation.latitude, mPickupLocation.longitude), new GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        if (error != null) {
-                            Toast.makeText(view.getContext(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(view.getContext(), "Location saved on server successfully!", Toast.LENGTH_LONG).show();
-
-                        }
-                    }
-
-                });
-                geoFireCR.setLocation("DropLocation", new GeoLocation(mDropLatLng.latitude, mDropLatLng.longitude), new GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        if (error != null) {
-                            Toast.makeText(view.getContext(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(view.getContext(), "Location saved on server successfully!", Toast.LENGTH_LONG).show();
-
-                        }
-                    }
-
-                });
-*/
                 if (!(mCarType2.isChecked())) {
                     mConfirm.setText("Getting your Suzuki Driver....");
-                    db.collection("suzukicustomerRequest").document(userID).set(requestmap);
+                    db.collection("vt1customerRequest").document(userID).set(customerRequest);
                 } else if (!(mCarType1.isChecked())) {
                     mConfirm.setText("Getting your Riksha Driver....");
-                    db.collection("rikshacustomerRequest").document(userID).set(requestmap);
+                    db.collection("vt2customerRequest").document(userID).set(customerRequest);;
                 }
                 ;
 
@@ -293,7 +286,7 @@ public class CargoCalculator extends Fragment {
         mfare.setText(results);
     }
 
-    public void fareCarType2Calculator() {
+    /*public void fareCarType2Calculator() {
         Double result = 0.0;
         Double b;
         Double a = Double.parseDouble(mdistance.getText().toString().trim());
@@ -309,6 +302,31 @@ public class CargoCalculator extends Fragment {
         String results = result.toString();
         mfare.setText(results);
     }
+*/
+    public void fareEstimate(View view) {
+
+        Double result = 0.0;
+        Double b;
+        Double a = Double.parseDouble(mdistance.getText().toString().trim());
+
+        if (!(mCarType1.isChecked())) {
+            b = (a * 90) + 270;
+            if ((mDriverLoading.isChecked())) {
+                result = b + 150;
+            } else {
+                result = b;
+            }
+        }
+        String results = result.toString();
+        mfare.setText(results);
+
+    }
+
+}
+
+
+
+
 
 // **********************************Get CLosest Driver ******************************************************
 
@@ -393,8 +411,5 @@ public class CargoCalculator extends Fragment {
             });
 
         }*/
-}
-
-
 
 
