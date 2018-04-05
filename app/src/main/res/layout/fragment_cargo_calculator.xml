@@ -244,12 +244,12 @@
                             android:padding="10dp">
 
                             <TextView
-                                android:id="@+id/textView5"
+                                android:id="@+id/textView_fare"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/get_fare_estimate"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:onClick="fareEstimate"
+
                                 />
 
                             <TextView
@@ -345,7 +345,9 @@
 
                         android:layout_weight="1"
                         android:background="@drawable/ripple_effect"
-                        android:text="@string/cancel" />
+                        android:text="@string/cancel"
+                        android:visibility="invisible"
+                        />
 
 
                     <android.support.v7.widget.AppCompatButton
@@ -357,7 +359,9 @@
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/ripple_effect"
-                        android:text="@string/confirm" />
+                        android:text="@string/confirm"
+                        android:visibility="invisible"
+                        />
                 </LinearLayout>
 
             </RelativeLayout>

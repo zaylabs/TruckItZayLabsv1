@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "435716523665-krqf3h66qtrgu1vf0ugj6emskigju390.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zaylabs.truckitzaylabsv1",
+            "certificate_hash": "d8f7f6a28f12fd60439d329ca26fd4be057d07c5"
+          }
+        },
+        {
+          "client_id": "435716523665-fcooq9fu4s0atntfvdtkqktd4mhtv803.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zaylabs.truckitzaylabsv1",
+            "certificate_hash": "09291f2490b9b3e99f1030b677e49ac97c2dadaf"
+          }
+        },
+        {
           "client_id": "435716523665-51rmfrk6mi4lu39nkie0pfg3v6ppjqig.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435716523665-51rmfrk6mi4lu39nkie0pfg3v6ppjqig.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
@@ -45,6 +66,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "435716523665-bgt7mhmkmhdtm2khcmsgsmlejal77tt7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zaylabs.zaylabsapp1",
+            "certificate_hash": "09291f2490b9b3e99f1030b677e49ac97c2dadaf"
+          }
+        },
         {
           "client_id": "435716523665-hbvau5pu60poido9nk5gi49c1m19j36t.apps.googleusercontent.com",
           "client_type": 1,

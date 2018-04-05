@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -135,7 +136,9 @@ public class CargoCalculator extends Fragment {
     private boolean riskshaDriverFound = false;
     private String rikshaDriverFoundID;
 
-    String phone;
+    private String mPhone;
+
+    TextView mFareEstimate;
 
     public CargoCalculator() {
         // Required empty public constructor
@@ -180,6 +183,7 @@ public class CargoCalculator extends Fragment {
         mConfirm = view.findViewById(R.id.btn_confirm);
         mDriverLoading = view.findViewById(R.id.dirver_loading);
         mPickupLocation = new LatLng(((MainActivity) getActivity()).mPickUpLatLng.latitude, ((MainActivity) getActivity()).mPickUpLatLng.longitude);
+        mFareEstimate=view.findViewById(R.id.textView_fare);
 
         mDropLatLng = ((MainActivity) getActivity()).mDropLatLng;
         mDropPlaceName = ((MainActivity) getActivity()).mDropName;
@@ -215,11 +219,11 @@ public class CargoCalculator extends Fragment {
             }
         });
 
+
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*geoSuzukiQuery.removeAllListeners();
-                geoRikshaQuery.removeAllListeners();*/
+
                 ((MainActivity) getActivity()).mHeader.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).mFooter.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).setDrawerState(true);
@@ -227,31 +231,23 @@ public class CargoCalculator extends Fragment {
                     ((MainActivity) getActivity()).sFm.beginTransaction().add(R.id.map, ((MainActivity) getActivity()).sMapFragment).commit();
                 else
                     ((MainActivity) getActivity()).sFm.beginTransaction().show(((MainActivity) getActivity()).sMapFragment).commit();
+                
             }
         });
 
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentReference docRef = db.collection("customers").document(userID);
-
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        userProfile profile = documentSnapshot.toObject(userProfile.class);
-                        phone=profile.getPhone();
 
 
-                    }
-                });
-
-
+                mCancel.setVisibility(View.INVISIBLE);
                 GeoPoint pickup = new GeoPoint(mPickupLocation.latitude,mPickupLocation.longitude);
                 GeoPoint drop=new GeoPoint(mDropLatLng.latitude,mDropLatLng.longitude);
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String name = Objects.requireNonNull(user).getDisplayName();
                 String photodp = Objects.requireNonNull(user.getPhotoUrl()).toString();
+                String phone = mPhone;
                 customerRequest customerRequest=new customerRequest(name,phone,pickup,drop,photodp);
 
 
@@ -266,11 +262,31 @@ public class CargoCalculator extends Fragment {
 
             }
         });
+
+        mFareEstimate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fareCarCalculator();
+            }
+        });
+
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                fareCarCalculator();
+            }
+        });
+        mDriverLoading.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                fareCarCalculator();
+            }
+        });
         return view;
     }
 
 
-    public void fareCarType1Calculator() {
+    public void fareCarCalculator() {
         Double result = 0.0;
         Double b;
         Double a = Double.parseDouble(mdistance.getText().toString().trim());
@@ -280,46 +296,30 @@ public class CargoCalculator extends Fragment {
                 result = b + 150;
             } else {
                 result = b;
+            }}
+         else if (!(mCarType1.isChecked())) {
+                b = (a * 90) + 270;
+                if ((mDriverLoading.isChecked())) {
+                    result = b + 150;
+                } else {
+                    result = b;
+                }
             }
-        }
             String results = result.toString();
-        mfare.setText(results);
-    }
+            mfare.setText(results);
+        DocumentReference docRef = db.collection("customers").document(userID);
 
-    /*public void fareCarType2Calculator() {
-        Double result = 0.0;
-        Double b;
-        Double a = Double.parseDouble(mdistance.getText().toString().trim());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userProfile profile = documentSnapshot.toObject(userProfile.class);
+                mPhone =profile.getPhone();
 
-        if (!(mCarType1.isChecked())) {
-            b = (a * 90) + 270;
-            if ((mDriverLoading.isChecked())) {
-                result = b + 150;
-            } else {
-                result = b;
             }
-        }
-        String results = result.toString();
-        mfare.setText(results);
-    }
-*/
-    public void fareEstimate(View view) {
 
-        Double result = 0.0;
-        Double b;
-        Double a = Double.parseDouble(mdistance.getText().toString().trim());
-
-        if (!(mCarType1.isChecked())) {
-            b = (a * 90) + 270;
-            if ((mDriverLoading.isChecked())) {
-                result = b + 150;
-            } else {
-                result = b;
-            }
-        }
-        String results = result.toString();
-        mfare.setText(results);
-
+        });
+        mConfirm.setVisibility(VISIBLE);
+        mCancel.setVisibility(VISIBLE);
     }
 
 }
