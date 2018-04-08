@@ -15,6 +15,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -140,6 +141,8 @@ public class CargoCalculator extends Fragment {
 
     TextView mFareEstimate;
 
+
+
     public CargoCalculator() {
         // Required empty public constructor
     }
@@ -174,7 +177,7 @@ public class CargoCalculator extends Fragment {
         mfare = view.findViewById(R.id.txt_fare);
         mdistance = view.findViewById(R.id.distance);
         mBox_Number = view.findViewById(R.id.number_Boxes);
-        mWeight = view.findViewById(R.id.Weight);
+      //  mWeight = view.findViewById(R.id.Weight);
         mSwipeRefresh = view.findViewById(R.id.swipe_refresh);
         mRadioGroup = view.findViewById(R.id.radiogroup_VType);
         mCarType1 = view.findViewById(R.id.radio_CarType1);
@@ -197,6 +200,13 @@ public class CargoCalculator extends Fragment {
 
         mRatingBar = view.findViewById(R.id.ratingBar);
 
+        Spinner spinner = view.findViewById(R.id.weight);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.wightinkg, android.R.layout.simple_spinner_dropdown_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
 
         mdistance.setText(((MainActivity) getActivity()).mDistancetoPass.getText());
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -246,9 +256,9 @@ public class CargoCalculator extends Fragment {
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String name = Objects.requireNonNull(user).getDisplayName();
-                String photodp = Objects.requireNonNull(user.getPhotoUrl()).toString();
+//                String photodp = Objects.requireNonNull(user.getPhotoUrl()).toString();
                 String phone = mPhone;
-                customerRequest customerRequest=new customerRequest(name,phone,pickup,drop,photodp);
+                customerRequest customerRequest=new customerRequest(name,pickup,drop,phone);
 
 
                 if (!(mCarType2.isChecked())) {

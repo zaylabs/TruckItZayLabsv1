@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <array name="wightinkg">
+    <item>1 KG</item>
+    <item>2 KG</item>
+    <item>3 KG</item>
+    <item>4 KG</item>
+    <item>5 KG</item>
+    <item>6 KG</item>
+    <item>7 KG</item>
+    <item>8 KG</item>
+    <item>9 KG</item>
+    <item>10 KG</item>
+    <item>11 KG</item>
+    <item>12 KG</item>
+    <item>13 KG</item>
+    <item>14 KG</item>
+    <item>15 KG</item>
+    <item>16 KG</item>
+    <item>17 KG</item>
+    <item>18 KG</item>
+    <item>19 KG</item>
+    <item>20 KG</item>
+    <item>21 KG</item>
+    <item>22 KG</item>
+    <item>23 KG</item>
+    <item>24 KG</item>
+    <item>25 KG</item>
+    <item>26 KG</item>
+    <item>27 KG</item>
+    <item>28 KG</item>
+    <item>29 KG</item>
+    <item>30 KG</item>
+    </array>
+</resources>

@@ -10,20 +10,19 @@ public class customerRequest {
 
 
     private GeoPoint drop;
-    private String photodp;
+
 
 
     customerRequest(){
 
     }
 
-    public customerRequest(String name, String phone, GeoPoint pickup,GeoPoint drop,String photodp){
+    public customerRequest(String name, GeoPoint pickup,GeoPoint drop, String phone){
 
         this.name = name;
-        this.phone = phone;
         this.pickup = pickup;
         this.drop = drop;
-        this.photodp = photodp;
+        this.phone = phone;
     }
 
     public String getName() {
@@ -58,12 +57,5 @@ public class customerRequest {
         this.drop = drop;
     }
 
-    public String getPhotodp() {
-        return photodp;
-    }
-
-    public void setPhotodp(String photodp) {
-        this.photodp = photodp;
-    }
 
 }
