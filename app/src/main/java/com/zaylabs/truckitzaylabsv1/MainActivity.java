@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -99,9 +101,11 @@ import com.zaylabs.truckitzaylabsv1.fragment.ProfileFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.SettingsFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.WalletFragment;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -110,6 +114,7 @@ import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,OnMapReadyCallback,ActivityCompat.OnRequestPermissionsResultCallback {
+
 
 
     public android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
@@ -355,20 +360,51 @@ public class MainActivity extends AppCompatActivity
 
                 if (mCurrentLocation != null) {
                     mPickUpLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                    mPickupText.setText(mPickUpLatLng.latitude + ", " + mPickUpLatLng.longitude);
+                    List<Address> addresses = null;
+                    String currentAddress = "";
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                    try {
+                        addresses = geocoder.getFromLocation(
+                                mCurrentLocation.getLatitude(),
+                                mCurrentLocation.getLongitude(),
+                                // In this sample, get just a single address.
+                                1);
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (addresses != null && addresses.size() > 0) {
+                        Address address = addresses.get(0);
+                        int max = address.getMaxAddressLineIndex();
+                        if (max != -1) {
+                            for (int i = 0; i < max; i++)
+
+                                currentAddress += address.getAddressLine(i) + " ";
+                            mPickupText.setText(currentAddress);
+                        }
+                        else
+                            mPickupText.setText(mCurrentLocation.toString());
+                    }
+
+
                     CameraUpdate mCameraCL = CameraUpdateFactory.newLatLngZoom(mPickUpLatLng, 18);
                     //mMap.moveCamera.(mCameraCL);
 
                     mMap.animateCamera(mCameraCL);
-                    if(mPickupMarker != null){
+                    if (mPickupMarker != null) {
                         mPickupMarker.remove();
                     }
+
                     mPickupMarker = mMap.addMarker(new MarkerOptions().position(mPickUpLatLng)
                             .title(mPickUpLatLng.toString()).draggable(true));
 
+
                 }
             }
-        });
+
+            });
 
         mClear.setOnClickListener(new View.OnClickListener() {
                                       @Override
@@ -738,12 +774,13 @@ public class MainActivity extends AppCompatActivity
     // the details view on screen.
     private OnCompleteListener<PlaceBufferResponse> mUpdatePickUpDetailsCallback
             = new OnCompleteListener<PlaceBufferResponse>() {
+        @SuppressLint("RestrictedApi")
         @Override
         public void onComplete(Task<PlaceBufferResponse> task) {
             try {
                 PlaceBufferResponse places = task.getResult();
                 // Get the Place object from the buffer.
-                final Place place = places.get(0);
+                @SuppressLint("RestrictedApi") final Place place = places.get(0);
                 // Format details of the place for display and show it in a TextView.
                 mPickUpDetailsText.setText(formatPickUpDetails(getResources(), place.getName(),
                         place.getId(), place.getAddress(), place.getPhoneNumber(),
@@ -785,12 +822,13 @@ public class MainActivity extends AppCompatActivity
     // Dropoff
     private OnCompleteListener<PlaceBufferResponse> mUpdateDropOffDetailsCallback
             = new OnCompleteListener<PlaceBufferResponse>() {
+        @SuppressLint("RestrictedApi")
         @Override
         public void onComplete(Task<PlaceBufferResponse> task) {
             try {
                 PlaceBufferResponse places = task.getResult();
                 // Get the Place object from the buffer.
-                final Place place = places.get(0);
+                @SuppressLint("RestrictedApi") final Place place = places.get(0);
                 // Format details of the place for display and show it in a TextView.
                 mDropOffDetailsText.setText(formatDropOffDetails(getResources(), place.getName(),
                         place.getId(), place.getAddress(), place.getPhoneNumber(),
@@ -1291,6 +1329,8 @@ public class MainActivity extends AppCompatActivity
             toggle.syncState();
         }
     }
+
+
 
 }
 
