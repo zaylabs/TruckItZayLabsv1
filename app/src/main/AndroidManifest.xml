@@ -28,7 +28,7 @@
         </activity>
         <activity android:name=".RegistrationActivity" />
         <activity android:name=".ForgetPasswordActivity" />
-        <activity android:name=".BaseActivity"/>
+        <activity android:name=".BaseActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -48,7 +48,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-
+        <activity android:name=".currentRide"></activity>
     </application>
 
 </manifest>

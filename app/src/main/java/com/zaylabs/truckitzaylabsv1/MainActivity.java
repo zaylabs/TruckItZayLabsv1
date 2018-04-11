@@ -4,21 +4,18 @@ package com.zaylabs.truckitzaylabsv1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -42,7 +39,6 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +62,6 @@ import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -78,36 +72,33 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
-import com.google.android.gms.nearby.messages.Distance;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 
+import com.zaylabs.truckitzaylabsv1.Adapter.HttpDataHandler;
 import com.zaylabs.truckitzaylabsv1.Adapter.PlaceAutocompleteAdapter;
-import com.zaylabs.truckitzaylabsv1.fragment.CargoCalculator;
+import com.zaylabs.truckitzaylabsv1.fragment.rideNowFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.HelpFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.HistoryFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.ProfileFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.SettingsFragment;
 import com.zaylabs.truckitzaylabsv1.fragment.WalletFragment;
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import static android.view.View.GONE;
 
@@ -130,6 +121,7 @@ public class MainActivity extends AppCompatActivity
     protected GeoDataClient mGeoDataClient;
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView mPickupText, mDropOffText;
+    public String mPickupAddress, mDropoffAddress;
     private TextView mPickUpDetailsText;
     private TextView mPickUpAttribution;
     private TextView mDropOffDetailsText;
@@ -232,6 +224,7 @@ public class MainActivity extends AppCompatActivity
     //*******************************Location Update End********************************
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
+    public double lat, lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,7 +262,7 @@ public class MainActivity extends AppCompatActivity
                     mFooter.setVisibility(GONE);
                     setDrawerState(false);
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.cm, new CargoCalculator());
+                    ft.replace(R.id.cm, new rideNowFragment());
                     ft.commit();
 
                 }else {
@@ -360,34 +353,37 @@ public class MainActivity extends AppCompatActivity
 
                 if (mCurrentLocation != null) {
                     mPickUpLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                    List<Address> addresses = null;
-                    String currentAddress = "";
-                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-                    try {
-                        addresses = geocoder.getFromLocation(
-                                mCurrentLocation.getLatitude(),
-                                mCurrentLocation.getLongitude(),
-                                // In this sample, get just a single address.
-                                1);
-
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (addresses != null && addresses.size() > 0) {
-                        Address address = addresses.get(0);
-                        int max = address.getMaxAddressLineIndex();
-                        if (max != -1) {
-                            for (int i = 0; i < max; i++)
-
-                                currentAddress += address.getAddressLine(i) + " ";
-                            mPickupText.setText(currentAddress);
-                        }
-                        else
-                            mPickupText.setText(mCurrentLocation.toString());
-                    }
-
+                    lat = mPickUpLatLng.latitude;
+                    lng = mPickUpLatLng.longitude;
+                    new GetAddress().execute(String.format("%.4f,%.4f",lat,lng));
+//                    List<Address> addresses = null;
+//                    String currentAddress = "";
+//                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+//                    try {
+//                        addresses = geocoder.getFromLocation(
+//                                mCurrentLocation.getLatitude(),
+//                                mCurrentLocation.getLongitude(),
+//                                // In this sample, get just a single address.
+//                                1);
+//
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    if (addresses != null && addresses.size() > 0) {
+//                        Address address = addresses.get(0);
+//                        int max = address.getMaxAddressLineIndex();
+//                        if (max != -1) {
+//                            for (int i = 0; i < max; i++)
+//
+//                                currentAddress += address.getAddressLine(i) + " ";
+//                            mPickupText.setText(currentAddress);
+//                        }
+//                        else
+//                            mPickupText.setText(mCurrentLocation.toString());
+//                    }
+                    //mPickupText.setText(mCurrentLocation.toString());
 
                     CameraUpdate mCameraCL = CameraUpdateFactory.newLatLngZoom(mPickUpLatLng, 18);
                     //mMap.moveCamera.(mCameraCL);
@@ -417,6 +413,8 @@ public class MainActivity extends AppCompatActivity
         });
 
 
+
+
         mPickupText.setOnItemClickListener(mPickupTextClickListener);
         mDropOffText.setOnItemClickListener(mDropOffTextClickListener);
 
@@ -435,6 +433,7 @@ public class MainActivity extends AppCompatActivity
         mAdapter = new PlaceAutocompleteAdapter(this, mGeoDataClient, BOUNDS_GREATER_SYDNEY, typeFilter);
         mPickupText.setAdapter(mAdapter);
         mDropOffText.setAdapter(mAdapter);
+
 
         //Auto Complete Google End
 
@@ -554,7 +553,7 @@ public class MainActivity extends AppCompatActivity
             mHeader.setVisibility(GONE);
             mFooter.setVisibility(GONE);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.cm, new CargoCalculator());
+            ft.replace(R.id.cm, new rideNowFragment());
             ft.commit();
         } else if (id == R.id.action_settings) {
             mHeader.setVisibility(GONE);
@@ -674,6 +673,7 @@ public class MainActivity extends AppCompatActivity
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            startLocationUpdates();
 
         }
     }
@@ -787,6 +787,8 @@ public class MainActivity extends AppCompatActivity
                         place.getWebsiteUri()));
 
                 mPickUpLatLng = place.getLatLng();
+                mPickupAddress= place.getAddress().toString();
+
                 CameraUpdate mCameraCL = CameraUpdateFactory.newLatLngZoom(mPickUpLatLng, 18);
                 // mMap.moveCamera(mCameraCL);
                 mMap.animateCamera(mCameraCL);
@@ -828,18 +830,19 @@ public class MainActivity extends AppCompatActivity
             try {
                 PlaceBufferResponse places = task.getResult();
                 // Get the Place object from the buffer.
-                @SuppressLint("RestrictedApi") final Place place = places.get(0);
+                @SuppressLint("RestrictedApi") final Place drop = places.get(0);
                 // Format details of the place for display and show it in a TextView.
-                mDropOffDetailsText.setText(formatDropOffDetails(getResources(), place.getName(),
-                        place.getId(), place.getAddress(), place.getPhoneNumber(),
-                        place.getWebsiteUri()));
-                mDropLatLng = place.getLatLng();
-                mDropName= place.getName().toString();
+                mDropOffDetailsText.setText(formatDropOffDetails(getResources(), drop.getName(),
+                        drop.getId(), drop.getAddress(), drop.getPhoneNumber(),
+                        drop.getWebsiteUri()));
+                mDropLatLng = drop.getLatLng();
+                mDropName= drop.getName().toString();
+                mDropoffAddress=drop.getAddress().toString();
                 if(mDropMarker != null){
                     mDropMarker.remove();
                 }
                 mDropMarker = mMap.addMarker(new MarkerOptions().position(mDropLatLng)
-                        .title(place.getName().toString()).draggable(true));
+                        .title(drop.getName().toString()).draggable(true));
                 mdistanceinKM=distanceInKM();
                 mDistancetoPass.setText(mdistanceinKM);
                 Toast.makeText(MainActivity.this, "Distance in KM " + mdistanceinKM, Toast.LENGTH_SHORT).show();
@@ -1331,6 +1334,55 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private class GetAddress extends AsyncTask<String,Void,String> {
 
+
+            ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog.setMessage("Please wait...");
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                try{
+                    double lat = Double.parseDouble(strings[0].split(",")[0]);
+                    double lng = Double.parseDouble(strings[0].split(",")[1]);
+                    String response;
+                    HttpDataHandler http = new HttpDataHandler();
+                    String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%.4f,%.4f&sensor=false",lat,lng);
+                    response = http.HttpData(url);
+                    return response;
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                try{
+                    JSONObject jsonObject = new JSONObject(s);
+
+                    String address = ((JSONArray)jsonObject.get("results")).getJSONObject(0).get("formatted_address").toString();
+                    mPickupText.setText(address);
+                    mPickupAddress=address;
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if(dialog.isShowing())
+                    dialog.dismiss();
+            }
+
+    }
 }
 

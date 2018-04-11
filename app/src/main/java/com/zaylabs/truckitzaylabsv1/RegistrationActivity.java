@@ -171,6 +171,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 .setDisplayName(mName.getText().toString())
                 .build();
 
+
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
