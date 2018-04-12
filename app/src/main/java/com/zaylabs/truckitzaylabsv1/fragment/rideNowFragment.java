@@ -242,7 +242,7 @@ public class rideNowFragment extends Fragment {
                 String dropaddress = mDAddress;
                 String pickupaddress = mPickupAddress;
                 customerRequest customerRequest=new customerRequest(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress);
-                customerHistory customerHistory=new customerHistory(null,null,null, pickup,drop,date,CID,null, VT, weight, boxes, description, driverloading, ridedistance, null, estFare, null,pickupaddress,dropaddress);
+                customerHistory customerHistory=new customerHistory(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,null,null,null,null,null,null,null,"Pending");
 
                 db.collection("customerRequest").document(userID).set(customerRequest);
                 db.collection("CustomerHistory").add(customerHistory);

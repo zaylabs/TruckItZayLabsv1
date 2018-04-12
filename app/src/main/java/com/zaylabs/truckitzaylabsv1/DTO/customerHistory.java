@@ -5,74 +5,74 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.Date;
 
 public class customerHistory {
-    private String driverName;
-    private String driverphone;
-    private String driverNIC;
+
+    private String name;
+    private String phone;
     private GeoPoint pickup;
     private GeoPoint drop;
     private Date date;
-    private String cid;
-    private String did;
-    private String vt;
+    private String CID;
+    private String VT;
     private String weight;
     private String boxes;
     private String description;
     private String driverloading;
-    private String estridedistance;
-    private String actualRideDistance;
-    private String estFare;
-    private String actualFare;
+    private String ridedistance;
     private String pickupaddress;
     private String dropaddress;
-customerHistory(){
+    private String drivername;
+    private String driverdp;
+    private String drivernic;
+    private String driverphone;
+    private GeoPoint driverlocation;
+    private String carregno;
+    private String driverid;
+    private String status;
 
-}
+    customerHistory(){
 
-public customerHistory(String driverName,String driverphone,String driverNIC, GeoPoint pickup,GeoPoint drop,Date date,String cid,String did, String vt, String weight, String boxes, String description, String driverloading, String estridedistance, String actualRideDistance, String estFare, String actualFare, String pickupaddress, String dropaddress){
-
-    this.driverName = driverName;
-    this.driverphone = driverphone;
-    this.driverNIC = driverNIC;
-    this.pickup = pickup;
-    this.drop = drop;
-    this.date = date;
-    this.cid = cid;
-    this.did = did;
-    this.vt = vt;
-    this.weight = weight;
-    this.boxes = boxes;
-    this.description = description;
-    this.driverloading = driverloading;
-    this.estridedistance = estridedistance;
-    this.actualRideDistance = actualRideDistance;
-    this.estFare = estFare;
-    this.actualFare = actualFare;
-    this.pickupaddress=pickupaddress;
-    this.dropaddress=dropaddress;
-}
-
-    public String getDriverName() {
-        return driverName;
     }
 
-    public void setDriverName(String driverName) {
-        this.driverName = driverName;
+    public customerHistory(String name, GeoPoint pickup,GeoPoint drop, String phone, Date date, String CID, String VT, String weight, String boxes ,String description, String driverloading, String ridedistance, String pickupaddress, String dropaddress, String drivername, String driverdp, String drivernic, String driverphone, GeoPoint driverlocation, String carregno, String driverid, String status ){
+
+        this.name = name;
+        this.pickup = pickup;
+        this.drop = drop;
+        this.phone = phone;
+        this.date =date;
+        this.CID = CID;
+        this.VT = VT;
+        this.weight=weight;
+        this.boxes=boxes;
+        this.description=description;
+        this.driverloading=driverloading;
+        this.ridedistance=ridedistance;
+        this.pickupaddress=pickupaddress;
+        this.dropaddress=dropaddress;
+        this.drivername=drivername;
+        this.driverdp=driverdp;
+        this.drivernic=drivernic;
+        this.driverphone=driverphone;
+        this.driverlocation=driverlocation;
+        this.carregno=carregno;
+        this.driverid=driverid;
+        this.status=status;
     }
 
-    public String getDriverphone() {
-        return driverphone;
+    public String getName() {
+        return name;
     }
 
-    public void setDriverphone(String driverphone) {
-        this.driverphone = driverphone;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDriverNIC() {
-        return driverNIC;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setDriverNIC(String driverNIC) {
-        this.driverNIC = driverNIC;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public GeoPoint getPickup() {
@@ -99,28 +99,20 @@ public customerHistory(String driverName,String driverphone,String driverNIC, Ge
         this.date = date;
     }
 
-    public String getCid() {
-        return cid;
+    public String getCID() {
+        return CID;
     }
 
-    public void setCid(String cid) {
-        this.cid = cid;
+    public void setCID(String CID) {
+        this.CID = CID;
     }
 
-    public String getDid() {
-        return did;
+    public String getVT() {
+        return VT;
     }
 
-    public void setDid(String did) {
-        this.did = did;
-    }
-
-    public String getVt() {
-        return vt;
-    }
-
-    public void setVt(String vt) {
-        this.vt = vt;
+    public void setVT(String VT) {
+        this.VT = VT;
     }
 
     public String getWeight() {
@@ -155,36 +147,12 @@ public customerHistory(String driverName,String driverphone,String driverNIC, Ge
         this.driverloading = driverloading;
     }
 
-    public String getEstridedistance() {
-        return estridedistance;
+    public String getRidedistance() {
+        return ridedistance;
     }
 
-    public void setEstridedistance(String estridedistance) {
-        this.estridedistance = estridedistance;
-    }
-
-    public String getActualRideDistance() {
-        return actualRideDistance;
-    }
-
-    public void setActualRideDistance(String actualRideDistance) {
-        this.actualRideDistance = actualRideDistance;
-    }
-
-    public String getEstFare() {
-        return estFare;
-    }
-
-    public void setEstFare(String estFare) {
-        this.estFare = estFare;
-    }
-
-    public String getActualFare() {
-        return actualFare;
-    }
-
-    public void setActualFare(String actualFare) {
-        this.actualFare = actualFare;
+    public void setRidedistance(String ridedistance) {
+        this.ridedistance = ridedistance;
     }
 
     public String getPickupaddress() {
@@ -201,6 +169,70 @@ public customerHistory(String driverName,String driverphone,String driverNIC, Ge
 
     public void setDropaddress(String dropaddress) {
         this.dropaddress = dropaddress;
+    }
+
+    public String getDrivername() {
+        return drivername;
+    }
+
+    public void setDrivername(String drivername) {
+        this.drivername = drivername;
+    }
+
+    public String getDriverdp() {
+        return driverdp;
+    }
+
+    public void setDriverdp(String driverdp) {
+        this.driverdp = driverdp;
+    }
+
+    public String getDrivernic() {
+        return drivernic;
+    }
+
+    public void setDrivernic(String drivernic) {
+        this.drivernic = drivernic;
+    }
+
+    public String getDriverphone() {
+        return driverphone;
+    }
+
+    public void setDriverphone(String driverphone) {
+        this.driverphone = driverphone;
+    }
+
+    public GeoPoint getDriverlocation() {
+        return driverlocation;
+    }
+
+    public void setDriverlocation(GeoPoint driverlocation) {
+        this.driverlocation = driverlocation;
+    }
+
+    public String getCarregno() {
+        return carregno;
+    }
+
+    public void setCarregno(String carregno) {
+        this.carregno = carregno;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDriverid() {
+        return driverid;
+    }
+
+    public void setDriverid(String driverid) {
+        this.driverid = driverid;
     }
 }
 
