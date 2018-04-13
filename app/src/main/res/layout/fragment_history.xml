@@ -6,7 +6,7 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/history_RecylerView"
+        android:id="@+id/driverHistoryRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

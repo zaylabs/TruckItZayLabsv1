@@ -28,12 +28,15 @@ public class customerHistory {
     private String carregno;
     private String driverid;
     private String status;
-
+    private String ridefare;
+    private String paidvia;
+    private String paymentstatus;
+    private String uniqueID;
     customerHistory(){
 
     }
 
-    public customerHistory(String name, GeoPoint pickup,GeoPoint drop, String phone, Date date, String CID, String VT, String weight, String boxes ,String description, String driverloading, String ridedistance, String pickupaddress, String dropaddress, String drivername, String driverdp, String drivernic, String driverphone, GeoPoint driverlocation, String carregno, String driverid, String status ){
+    public customerHistory(String name, GeoPoint pickup,GeoPoint drop, String phone, Date date, String CID, String VT, String weight, String boxes ,String description, String driverloading, String ridedistance, String pickupaddress, String dropaddress, String drivername, String driverdp, String drivernic, String driverphone, GeoPoint driverlocation, String carregno, String driverid, String status,String ridefare, String paidvia, String paymentstatus,String uniqueID ){
 
         this.name = name;
         this.pickup = pickup;
@@ -57,6 +60,10 @@ public class customerHistory {
         this.carregno=carregno;
         this.driverid=driverid;
         this.status=status;
+        this.ridefare=ridefare;
+        this.paidvia=paidvia;
+        this.paymentstatus=paymentstatus;
+        this.uniqueID=uniqueID;
     }
 
     public String getName() {
@@ -233,6 +240,38 @@ public class customerHistory {
 
     public void setDriverid(String driverid) {
         this.driverid = driverid;
+    }
+
+    public String getRidefare() {
+        return ridefare;
+    }
+
+    public void setRidefare(String ridefare) {
+        this.ridefare = ridefare;
+    }
+
+    public String getPaidvia() {
+        return paidvia;
+    }
+
+    public void setPaidvia(String paidvia) {
+        this.paidvia = paidvia;
+    }
+
+    public String getPaymentstatus() {
+        return paymentstatus;
+    }
+
+    public void setPaymentstatus(String paymentstatus) {
+        this.paymentstatus = paymentstatus;
+    }
+
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
     }
 }
 

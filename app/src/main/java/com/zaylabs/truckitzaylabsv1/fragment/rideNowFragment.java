@@ -109,6 +109,7 @@ public class rideNowFragment extends Fragment {
     private String mPhone;
     private String mPickupAddress;
     private String mDAddress;
+    private String uniqueID;
     public rideNowFragment() {
         // Required empty public constructor
     }
@@ -241,23 +242,15 @@ public class rideNowFragment extends Fragment {
                 String ridedistance = mdistance.getText().toString();
                 String dropaddress = mDAddress;
                 String pickupaddress = mPickupAddress;
-                customerRequest customerRequest=new customerRequest(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress);
-                customerHistory customerHistory=new customerHistory(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,null,null,null,null,null,null,null,"Pending");
+                uniqueID= userID+date;
+                customerRequest customerRequest=new customerRequest(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress, uniqueID);
+                customerHistory customerHistory=new customerHistory(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,null,null,null,null,null,null,null,"Pending",null,null,null, uniqueID);
 
-                db.collection("customerRequest").document(userID).set(customerRequest);
-                db.collection("CustomerHistory").add(customerHistory);
+                db.collection("customerRequest").document(uniqueID).set(customerRequest);
+                db.collection("CustomerHistory").document(uniqueID).set(customerHistory);
 
                 currentRide();
 
-                /*if (!(mCarType2.isChecked())) {
-                    mConfirm.setText("Getting your Suzuki Driver....");
-                    db.collection("vt1customerRequest").document(userID).set(customerRequest);
-                    db.collection("CustomerHistory").add(customerHistory);
-                } else if (!(mCarType1.isChecked())) {
-                    mConfirm.setText("Getting your Riksha Driver....");
-                    db.collection("vt2customerRequest").document(userID).set(customerRequest);
-                    db.collection("CustomerHistory").add(customerRequest);
-                }*/
 
             }
         });

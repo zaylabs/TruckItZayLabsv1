@@ -16,8 +16,10 @@
 
 package com.zaylabs.truckitzaylabsv1.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -111,7 +113,7 @@ public class PlaceAutocompleteAdapter
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View row = super.getView(position, convertView, parent);
 
         // Sets the primary and secondary text for a row.
@@ -122,6 +124,7 @@ public class PlaceAutocompleteAdapter
 
         TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
         TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
+        assert item != null;
         textView1.setText(item.getPrimaryText(STYLE_BOLD));
         textView2.setText(item.getSecondaryText(STYLE_BOLD));
 
@@ -131,6 +134,7 @@ public class PlaceAutocompleteAdapter
     /**
      * Returns the filter for the current set of autocomplete results.
      */
+    @NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -198,6 +202,7 @@ public class PlaceAutocompleteAdapter
      * @see GeoDataClient#getAutocompletePredictions(String, LatLngBounds, AutocompleteFilter)
      * @see AutocompletePrediction#freeze()
      */
+    @SuppressLint("RestrictedApi")
     private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
         Log.i(TAG, "Starting autocomplete query for: " + constraint);
 
