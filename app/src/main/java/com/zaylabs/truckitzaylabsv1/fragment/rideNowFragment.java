@@ -162,13 +162,13 @@ public class rideNowFragment extends Fragment {
         });
 
 
-        Spinner spinner = view.findViewById(R.id.weight);
+
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.wightinkg, android.R.layout.simple_spinner_dropdown_item);
 // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        mWeight.setAdapter(adapter);
 
         mdistance.setText(((MainActivity) getActivity()).mDistancetoPass.getText());
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -239,12 +239,12 @@ public class rideNowFragment extends Fragment {
                 }else  {
                     driverloading="DriverLoading Not Needed";
                 }
-                String ridedistance = mdistance.getText().toString();
+                Float ridedistance =((MainActivity) getActivity()).distance ;
                 String dropaddress = mDAddress;
                 String pickupaddress = mPickupAddress;
                 uniqueID= userID+date;
                 customerRequest customerRequest=new customerRequest(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress, uniqueID);
-                customerHistory customerHistory=new customerHistory(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,null,null,null,null,null,null,null,"Pending",null,null,null, uniqueID);
+                customerHistory customerHistory=new customerHistory(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,null,null,null,null,null,null,null,"Pending",null,null,null,null, uniqueID);
 
                 db.collection("customerRequest").document(uniqueID).set(customerRequest);
                 db.collection("CustomerHistory").document(uniqueID).set(customerHistory);

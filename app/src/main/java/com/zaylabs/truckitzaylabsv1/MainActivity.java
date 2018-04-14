@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
     public double lat, lng;
+    public Float distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1304,7 +1305,7 @@ public class MainActivity extends AppCompatActivity
         loc2.setLatitude(mDropLatLng.latitude);
         loc2.setLongitude(mDropLatLng.longitude);
 
-        float distance = loc1.distanceTo(loc2)/1000;
+        distance = loc1.distanceTo(loc2)/1000;
             /*Double mpickuplongitude = mPickUpLatLng.longitude;
             Double mpickuplatitude= mPickUpLatLng.latitude;
             Double mdroplongitude= mDropLatLng.longitude;

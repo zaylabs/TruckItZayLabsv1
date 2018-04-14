@@ -17,7 +17,7 @@ public class customerRequest {
     private String boxes;
     private String description;
     private String driverloading;
-    private String ridedistance;
+    private Float ridedistance;
     private String pickupaddress;
     private String dropaddress;
     private String uniqueID;
@@ -25,7 +25,7 @@ public class customerRequest {
 
     }
 
-    public customerRequest(String name, GeoPoint pickup,GeoPoint drop, String phone, Date date, String CID, String VT, String weight, String boxes ,String description, String driverloading, String ridedistance, String pickupaddress, String dropaddress, String uniqueID){
+    public customerRequest(String name, GeoPoint pickup,GeoPoint drop, String phone, Date date, String CID, String VT, String weight, String boxes ,String description, String driverloading, Float ridedistance, String pickupaddress, String dropaddress, String uniqueID){
 
         this.name = name;
         this.pickup = pickup;
@@ -132,11 +132,11 @@ public class customerRequest {
         this.driverloading = driverloading;
     }
 
-    public String getRidedistance() {
+    public Float getRidedistance() {
         return ridedistance;
     }
 
-    public void setRidedistance(String ridedistance) {
+    public void setRidedistance(Float ridedistance) {
         this.ridedistance = ridedistance;
     }
 

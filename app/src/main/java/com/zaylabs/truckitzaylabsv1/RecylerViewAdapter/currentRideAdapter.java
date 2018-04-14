@@ -44,7 +44,7 @@ public void onBindViewHolder(@NonNull currentRideAdapter.ViewHolder holder, int 
         holder.mDrop.setText(dHistory.get(position).getDropaddress());
         holder.mPhone.setText(dHistory.get(position).getDriverphone());
         holder.mstatus.setText(dHistory.get(position).getStatus());
-        holder.mRideDistance.setText(dHistory.get(position).getRidedistance());
+        holder.mRideDistance.setText(String.valueOf(dHistory.get(position).getRidedistance()));
         holder.mDiscription.setText(dHistory.get(position).getDescription());
         holder.mBoxes.setText(dHistory.get(position).getBoxes());
         holder.mWeight.setText(dHistory.get(position).getWeight());
