@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.CardView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRcustomername"
+                android:text="CustomerName"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRpickupaddress"
+                android:text="PickUpaddress"
+                android:layout_below="@id/CRcustomername"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRdropaddress"
+                android:text="dropaddress"
+                android:layout_below="@id/CRpickupaddress"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRcustomerphone"
+                android:text="phone"
+                android:layout_below="@id/CRdropaddress"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRridedistance"
+                android:text="Distance"
+                android:layout_below="@id/CRcustomerphone"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRdescription"
+                android:text="Description"
+                android:layout_below="@id/CRridedistance"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRBoxes"
+                android:text="Boxes"
+                android:layout_below="@id/CRdescription"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRweight"
+                android:text="Weight"
+                android:layout_below="@id/CRBoxes"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRstatus"
+                android:text="Status"
+                android:layout_below="@id/CRweight"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRpaymentstatus"
+                android:text="PaymentStatus"
+                android:layout_below="@id/CRstatus"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRpaidvia"
+                android:text="paidvia"
+                android:layout_below="@id/CRpaymentstatus"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CRfare"
+                android:text="fare"
+                android:layout_below="@id/CRpaidvia"
+                />
+
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+</LinearLayout>
