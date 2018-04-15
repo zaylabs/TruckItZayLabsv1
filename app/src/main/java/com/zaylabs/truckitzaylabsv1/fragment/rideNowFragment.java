@@ -101,7 +101,7 @@ public class rideNowFragment extends Fragment {
     private TextView mfare, mdistance;
     private CheckBox mDriverLoading;
     private String mDistancePassed;
-
+    private String estFare;
     private TextView mFareEstimate;
     private LatLng mPickupLocation;
     private LatLng mDropLatLng;
@@ -233,7 +233,7 @@ public class rideNowFragment extends Fragment {
                 String boxes = mBox_Number.getText().toString();
                 String description= mDesc.getText().toString();
                 String driverloading;
-                String estFare = mFareEstimate.getText().toString();
+
                 if (mDriverLoading.isChecked()){
                     driverloading ="Diver Loading Needed";
                 }else  {
@@ -243,8 +243,8 @@ public class rideNowFragment extends Fragment {
                 String dropaddress = mDAddress;
                 String pickupaddress = mPickupAddress;
                 uniqueID= userID+date;
-                customerRequest customerRequest=new customerRequest(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress, uniqueID);
-                customerHistory customerHistory=new customerHistory(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,null,null,null,null,null,null,null,"Pending",null,null,null,null, uniqueID);
+                customerRequest customerRequest=new customerRequest(name,pickup,drop,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress, estFare, uniqueID);
+                customerHistory customerHistory=new customerHistory(name,pickup,drop,null,null,phone,date,CID,VT,weight,boxes,description,driverloading,ridedistance,pickupaddress,dropaddress,estFare,null,null,null,null,null,null,null,"Pending",null,null,null,null, uniqueID);
 
                 db.collection("customerRequest").document(uniqueID).set(customerRequest);
                 db.collection("CustomerHistory").document(uniqueID).set(customerHistory);
@@ -298,6 +298,7 @@ public class rideNowFragment extends Fragment {
                 }
             }
             String results = result.toString();
+            estFare=results;
             mfare.setText(results);
 
         mConfirm.setVisibility(VISIBLE);

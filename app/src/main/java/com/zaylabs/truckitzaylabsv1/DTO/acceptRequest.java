@@ -8,8 +8,10 @@ public class acceptRequest {
 
     private String name;
     private String phone;
-    private GeoPoint pickup;
-    private GeoPoint drop;
+    private GeoPoint originalpickup;
+    private GeoPoint originaldrop;
+    private GeoPoint actualpickup;
+    private GeoPoint actualdrop;
     private Date date;
     private String CID;
     private String VT;
@@ -20,6 +22,7 @@ public class acceptRequest {
     private Float ridedistance;
     private String pickupaddress;
     private String dropaddress;
+    private String estFare;
     private String drivername;
     private String driverdp;
     private String drivernic;
@@ -39,11 +42,13 @@ public class acceptRequest {
 
     }
 
-    public acceptRequest(String name, GeoPoint pickup, GeoPoint drop, String phone, Date date, String CID, String VT, String weight, String boxes , String description, String driverloading, Float ridedistance, String pickupaddress, String dropaddress, String drivername, String driverdp, String drivernic, String driverphone, GeoPoint driverlocation, String carregno, String driverid, String status, String ridefare, String paidvia, String paymentstatus, Date statusdate, Float waitingtime, String uniqueID ){
+    public acceptRequest(String name, GeoPoint originalpickup, GeoPoint originaldrop,GeoPoint actualpickup,GeoPoint actualdrop, String phone, Date date, String CID, String VT, String weight, String boxes , String description, String driverloading, Float ridedistance, String pickupaddress, String dropaddress, String estFare, String drivername, String driverdp, String drivernic, String driverphone, GeoPoint driverlocation, String carregno, String driverid, String status, String ridefare, String paidvia, String paymentstatus, Date statusdate, Float waitingtime, String uniqueID ){
 
         this.name = name;
-        this.pickup = pickup;
-        this.drop = drop;
+        this.originalpickup = originalpickup;
+        this.originaldrop = originaldrop;
+        this.actualpickup=actualpickup;
+        this.actualdrop=actualdrop;
         this.phone = phone;
         this.date =date;
         this.CID = CID;
@@ -54,6 +59,7 @@ public class acceptRequest {
         this.driverloading=driverloading;
         this.ridedistance=ridedistance;
         this.pickupaddress=pickupaddress;
+        this.estFare=estFare;
         this.dropaddress=dropaddress;
         this.drivername=drivername;
         this.driverdp=driverdp;
@@ -63,6 +69,7 @@ public class acceptRequest {
         this.carregno=carregno;
         this.driverid=driverid;
         this.status=status;
+
         this.ridefare=ridefare;
         this.paidvia=paidvia;
         this.paymentstatus=paymentstatus;
@@ -87,21 +94,6 @@ public class acceptRequest {
         this.phone = phone;
     }
 
-    public GeoPoint getPickup() {
-        return pickup;
-    }
-
-    public void setPickup(GeoPoint pickup) {
-        this.pickup = pickup;
-    }
-
-    public GeoPoint getDrop() {
-        return drop;
-    }
-
-    public void setDrop(GeoPoint drop) {
-        this.drop = drop;
-    }
 
     public Date getDate() {
         return date;
@@ -294,6 +286,44 @@ public class acceptRequest {
     public void setWaitingtime(Float waitingtime) {
         this.waitingtime = waitingtime;
     }
+
+    public GeoPoint getOriginalpickup() {
+        return originalpickup;
+    }
+
+    public void setOriginalpickup(GeoPoint originalpickup) {
+        this.originalpickup = originalpickup;
+    }
+
+    public GeoPoint getOriginaldrop() {
+        return originaldrop;
+    }
+
+    public void setOriginaldrop(GeoPoint originaldrop) {
+        this.originaldrop = originaldrop;
+    }
+
+    public GeoPoint getActualpickup() {
+        return actualpickup;
+    }
+
+    public void setActualpickup(GeoPoint actualpickup) {
+        this.actualpickup = actualpickup;
+    }
+
+    public GeoPoint getActualdrop() {
+        return actualdrop;
+    }
+
+    public void setActualdrop(GeoPoint actualdrop) {
+        this.actualdrop = actualdrop;
+    }
+
+    public String getEstFare() {
+        return estFare;
+    }
+
+    public void setEstFare(String estFare) {
+        this.estFare = estFare;
+    }
 }
-
-
