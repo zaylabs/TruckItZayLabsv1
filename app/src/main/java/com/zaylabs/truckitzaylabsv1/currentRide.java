@@ -57,11 +57,15 @@ public class currentRide extends AppCompatActivity {
                 for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                     switch (doc.getType()) {
                         case ADDED:
+                            dHistory.remove(acceptRequest);
+                            currentRideAdapter.notifyDataSetChanged();
                             acceptRequest = doc.getDocument().toObject(acceptRequest.class);
                             dHistory.add(acceptRequest);
                             currentRideAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
+                            dHistory.remove(acceptRequest);
+                            currentRideAdapter.notifyDataSetChanged();
                             acceptRequest = doc.getDocument().toObject(acceptRequest.class);
                             dHistory.add(acceptRequest);
                             currentRideAdapter.notifyDataSetChanged();
